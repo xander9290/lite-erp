@@ -4,8 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button, Dropdown, Stack } from "react-bootstrap";
 import Clock from "./Clock";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 function NavRightView() {
+  const { data: session } = useSession();
+
   const [darkMode, setDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -41,18 +45,18 @@ function NavRightView() {
             width={26}
             height={26}
             unoptimized
-            src={"/image/avatar_default.svg"}
+            src={session?.user.image ?? "/image/avatar_default.svg"}
             alt=""
-            className="me-2 img-thumbnail rounded"
+            className="me-2 rounded"
           />
-          <span className="text-capitalize">alex aguilar</span>
+          <span className="text-capitalize">{session?.user.name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item>
+          <Dropdown.Item as={Link} href={`/app/profile/${session?.user.id}`}>
             <i className="bi bi-person-circle me-2"></i>
             <span>Perfil</span>
           </Dropdown.Item>
-          <Dropdown.Item>
+          <Dropdown.Item as={Button} onClick={() => signOut()}>
             <i className="bi bi-box-arrow-right me-2"></i>
             <span>Cerrar sesión</span>
           </Dropdown.Item>

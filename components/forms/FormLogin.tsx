@@ -1,8 +1,19 @@
 "use client";
 
+import { userLogin } from "@/app/api/auth/login/login-actions";
 import Link from "next/link";
-import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { useRouter } from "next/navigation";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type TInputs = {
   login: string;
@@ -16,7 +27,20 @@ function FormLogin() {
     formState: { errors, isSubmitting },
   } = useForm<TInputs>();
 
-  const onSubmit: SubmitHandler<TInputs> = async (data) => {};
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<TInputs> = async (data) => {
+    const res = await userLogin(data);
+    if (!res.success) {
+      toast.error(res.message, { position: "top-right" });
+      return;
+    }
+
+    toast.success("Acesso correcto", { position: "bottom-right" });
+    router.replace("/app");
+  };
+
+  console.log(isSubmitting);
 
   return (
     <Container>
@@ -29,7 +53,7 @@ function FormLogin() {
                 <i className="bi bi-house-fill"></i>
               </Link>
             </div>
-            <fieldset className="card-body">
+            <fieldset className="card-body" disabled={isSubmitting}>
               <Form.Group controlId="UserLogin" className="mb-3">
                 <InputGroup>
                   <InputGroup.Text>
@@ -80,7 +104,16 @@ function FormLogin() {
                 </InputGroup>
               </Form.Group>
               <Form.Group className="d-grid">
-                <Button type="submit">Entrar</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Spinner size="sm" animation="border" className="me-1" />
+                      <span>Validando...</span>
+                    </>
+                  ) : (
+                    "Entrar"
+                  )}
+                </Button>
               </Form.Group>
             </fieldset>
           </Form>

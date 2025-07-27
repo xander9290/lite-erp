@@ -1,6 +1,13 @@
 import LandingPage from "./LandingPage";
+import { auth } from "@/libs/auth";
+import { redirect } from "next/navigation";
 
-function PageHome() {
+async function PageHome() {
+  const session = await auth();
+
+  if (session?.user) {
+    redirect("/app");
+  }
   return <LandingPage />;
 }
 
