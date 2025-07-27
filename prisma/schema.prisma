@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generate/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Partner {
+  id          String @id @default(cuid())
+  name        String
+  displayName String @unique @map("display_name")
+
+  // no requeridos
+  email        String?
+  phone        String?
+  street       String?
+  secondStreet String? @map("second_street")
+  town         String?
+  city         String?
+  province     String?
+  country      String?
+  zip          Int?
+  vat          String?
+
+  // campos de modelo
+  state       String?
+  imageUrl    String?
+  displayType String  @default("internal") @map("display_type")
+
+  relatedUser User?
+
+  userId    String? @map("user_id")
+  userAgent User?   @relation("UserAgent", fields: [userId], references: [id])
+
+  createUid String? @map("create_uid")
+  createBy  User?   @relation("CreateUidPartners", fields: [createUid], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([name, displayName, phone])
+  @@map("partners")
+}
+
+model User {
+  id          String @id @default(cuid())
+  login       String @unique
+  password    String
+  displayName String @unique @map("display_name")
+
+  // modelos creados
+  createdPartners Partner[] @relation("CreateUidPartners")
+  createdGroups   Group[]   @relation("CreateUidGroups")
+
+  // modelos a cargo
+  partenerLeads Partner[] @relation("UserAgent")
+
+  // modelos relacionados
+  groupId String? @map("group_id")
+  group   Group?  @relation(fields: [groupId], references: [id])
+
+  partnerId String?  @unique
+  partner   Partner? @relation(fields: [partnerId], references: [id])
+
+  // indicadores
+  lastLogin DateTime? @map("last_login")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([displayName])
+  @@map("users")
+}
+
+model Group {
+  id          String @id @default(cuid())
+  name        String @unique
+  displayName String @unique @map("display_name")
+
+  users User[]
+
+  createUid String? @map("create_uid")
+  createBy  User?   @relation("CreateUidGroups", fields: [createUid], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([name])
+  @@map("groups")
+}
