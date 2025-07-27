@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bootstrap-icons": "^1.13.1",
     "bootswatch": "^5.3.7",
     "next": "15.4.4",
     "react": "19.1.0",
