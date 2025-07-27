@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "bootswatch/dist/cosmo/bootstrap.css";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "LITE-ERP",
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
