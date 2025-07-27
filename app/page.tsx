@@ -1,5 +1,7 @@
+import LandingPage from "./LandingPage";
+
 function PageHome() {
-  return <div>PageHome</div>;
+  return <LandingPage />;
 }
 
 export default PageHome;
