@@ -17,9 +17,8 @@ export default function LandingPage() {
               <h1 className="mb-4">
                 Bienvenido a <strong>LITE-ERP</strong>
               </h1>
-              <p className="mb-4">Si ya tienes acceso, inicia sesión.</p>
               <div className="d-flex justify-content-center gap-3">
-                <Link href="/auth/login" passHref>
+                <Link href="/api/auth/login" passHref>
                   <Button variant="primary">Iniciar sesión</Button>
                 </Link>
               </div>
