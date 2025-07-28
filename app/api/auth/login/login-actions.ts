@@ -25,7 +25,7 @@ export const userLogin = async ({
     console.log(error);
     return {
       success: false,
-      message: "Error al validar credenciales @try-catch",
+      message: "Credenciales no válidas",
     };
   }
 };
