@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Nav, NavDropdown } from "react-bootstrap";
 
 function TopNavItems() {
@@ -103,7 +104,7 @@ function TopNavItems() {
           </>
         }
       >
-        <NavDropdown.Item>
+        <NavDropdown.Item as={Link} href={`/app/users?view_mode=list&page=1`}>
           <i className="bi bi-person me-1 text-warning"></i>
           <span>Usuarios</span>
         </NavDropdown.Item>

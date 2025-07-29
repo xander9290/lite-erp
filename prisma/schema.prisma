@@ -25,7 +25,7 @@ model Partner {
   zip          Int?
   vat          String?
 
-  // campos de modelo
+  // campos de modelo 
   state       String?
   displayType String  @default("internal") @map("display_type")
 
@@ -48,10 +48,11 @@ model Partner {
 }
 
 model User {
-  id          String @id @default(cuid())
-  login       String @unique
+  id          String  @id @default(cuid())
+  login       String  @unique
   password    String
-  displayName String @unique @map("display_name")
+  name        String? @unique
+  displayName String  @unique @map("display_name")
 
   // modelos creados
   createdPartners Partner[] @relation("CreateUidPartners")

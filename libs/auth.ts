@@ -35,6 +35,8 @@ export const authOptions = {
           user.password
         );
 
+        console.log(verifiedPswd);
+
         if (!verifiedPswd) {
           throw new Error("Credenciales inválidas");
         }

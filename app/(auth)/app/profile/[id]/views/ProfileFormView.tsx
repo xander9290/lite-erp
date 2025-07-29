@@ -9,6 +9,7 @@ import FormTemplate, {
 import { Partner, User } from "@/generate/prisma";
 import { UserWithPartner } from "@/libs/definitions";
 import ImageSource from "@/ui/ImageSource";
+import { Many2one } from "@/ui/Many2one";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -16,7 +17,7 @@ import toast from "react-hot-toast";
 
 type TInputs = Omit<
   User & Partner,
-  "password" | "id" | "createdAt" | "updatedAt" | "displayName" | "partnerId"
+  "password" | "id" | "createdAt" | "updatedAt" | "displayName"
 >;
 
 interface IInputs extends TInputs {
@@ -36,6 +37,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
     reset,
+    control,
   } = useForm<IInputs>({
     defaultValues: {
       name: user.partner.name,
@@ -49,6 +51,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
       country: user.partner.country,
       zip: user.partner.zip,
       vat: user.partner.vat,
+      partnerId: user.partnerId,
     },
   });
 
@@ -147,6 +150,13 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
               size="sm"
               autoComplete="off"
             />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Contacto:</Form.Label>
+            <Form.Text className="text-capitalize">
+              {" "}
+              {user.partner.name}
+            </Form.Text>
           </Form.Group>
         </ViewGroup>
         <ViewGroup disabled title="Información personal">

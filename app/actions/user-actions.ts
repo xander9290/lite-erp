@@ -84,6 +84,7 @@ export async function updateUserProfile({
       },
       data: {
         displayName: `[${login}] ${name}`,
+        name,
         partner: {
           update: {
             email,
