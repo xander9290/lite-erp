@@ -15,7 +15,13 @@ export const authOptions = {
         const { email: login, password } = credentials || {};
 
         user = await db.find("user", ["and", ["login", "=", login]], {
-          include: { partner: true },
+          include: {
+            partner: {
+              include: {
+                Image: true,
+              },
+            },
+          },
         });
 
         if (!user) {
@@ -42,7 +48,7 @@ export const authOptions = {
           login: user.login,
           name: user.partner.name,
           partnerId: user.partnerId,
-          imageUrl: user.partner.imageUrl,
+          imageUrl: user.partner.Image.url,
         };
       },
     }),

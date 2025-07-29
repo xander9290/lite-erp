@@ -27,7 +27,6 @@ model Partner {
 
   // campos de modelo
   state       String?
-  imageUrl    String?
   displayType String  @default("internal") @map("display_type")
 
   relatedUser User?
@@ -37,6 +36,9 @@ model Partner {
 
   createUid String? @map("create_uid")
   createBy  User?   @relation("CreateUidPartners", fields: [createUid], references: [id])
+
+  imageId String? @unique @map("image_id")
+  Image   Image?  @relation("EntityImage", fields: [imageId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -90,4 +92,18 @@ model Group {
 
   @@index([name])
   @@map("groups")
+}
+
+model Image {
+  id         String  @id @default(cuid())
+  url        String
+  publicId   String  @map("public_id")
+  entityType String?
+
+  Partner Partner? @relation("EntityImage")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("images")
 }

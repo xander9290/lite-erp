@@ -52,7 +52,10 @@ function NavRightView() {
           <span className="text-capitalize">{session?.user.name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item as={Link} href={`/app/profile/${session?.user.id}`}>
+          <Dropdown.Item
+            as={Link}
+            href={`/app/profile/${session?.user.id}?view_type=form`}
+          >
             <i className="bi bi-person-circle me-2"></i>
             <span>Perfil</span>
           </Dropdown.Item>
