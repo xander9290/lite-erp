@@ -1,4 +1,4 @@
-import { Partner, User } from "@/generate/prisma";
+import { Group, Image, Partner, User } from "@/generate/prisma";
 
 export interface ActionResponse<T> {
   success: boolean;
@@ -16,6 +16,7 @@ export interface ModalBasicProps {
 export interface PartnerWithAttrs extends Partner {
   createdBy: User | null;
   relatedUser: User | null;
+  Image: Image | null;
 }
 
 export interface PartnerContacts extends PartnerWithAttrs {
@@ -24,4 +25,5 @@ export interface PartnerContacts extends PartnerWithAttrs {
 
 export interface UserWithPartner extends User {
   partner: PartnerWithAttrs;
+  group: Group;
 }

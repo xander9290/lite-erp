@@ -7,15 +7,17 @@ export async function fetchUsers({
   skip,
   perPage,
   search,
+  filter = "name",
 }: {
   skip: number;
   perPage: number;
   search: string;
+  filter: string;
 }): Promise<ActionResponse<UserWithPartner[]>> {
   try {
     const users: UserWithPartner[] = await db.find(
       "user",
-      ["or", ["login", "ilike", search], ["name", "ilike", search]],
+      ["or", [filter, "ilike", search]],
       {
         skip: (skip - 1) * perPage,
         take: perPage,
@@ -26,6 +28,7 @@ export async function fetchUsers({
               Image: true,
             },
           },
+          group: true,
         },
       }
     );

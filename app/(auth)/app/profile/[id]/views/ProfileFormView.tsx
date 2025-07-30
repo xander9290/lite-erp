@@ -9,7 +9,6 @@ import FormTemplate, {
 import { Partner, User } from "@/generate/prisma";
 import { UserWithPartner } from "@/libs/definitions";
 import ImageSource from "@/ui/ImageSource";
-import { Many2one } from "@/ui/Many2one";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -37,7 +36,6 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
     reset,
-    control,
   } = useForm<IInputs>({
     defaultValues: {
       name: user.partner.name,
