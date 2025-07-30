@@ -3,7 +3,7 @@
 import NotFound from "@/app/not-found";
 import { fetchUser, fetchUsers } from "../actions";
 import UserListView from "./UserListView";
-import { UserWithLeads, UserWithPartner } from "@/libs/definitions";
+import { UserWithPartner } from "@/libs/definitions";
 import UserFormView from "./UserFormView";
 
 async function UsersMainView({

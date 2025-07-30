@@ -14,7 +14,10 @@ import {
   Modal,
   Row,
   Spinner,
+  Tab,
+  Tabs,
 } from "react-bootstrap";
+import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 
 type FormViewTemplateProps = {
   children: React.ReactNode;
@@ -276,6 +279,39 @@ export const ViewGroupFluid = ({
         {children}
       </div>
     </Col>
+  );
+};
+
+export const FormBook = ({
+  children,
+  dKey,
+}: {
+  children: React.ReactNode;
+  dKey: string;
+}) => {
+  const [key, setKey] = useState(dKey);
+  return (
+    <ViewGroupFluid>
+      <Tabs accessKey={key} onSelect={(k) => setKey(k || "")}>
+        {children}
+      </Tabs>
+    </ViewGroupFluid>
+  );
+};
+
+export const FormPage = ({
+  children,
+  eventKey,
+  title,
+}: {
+  children: React.ReactNode;
+  eventKey: string | undefined;
+  title: string;
+}) => {
+  return (
+    <Tab eventKey={eventKey} title={title}>
+      {children}
+    </Tab>
   );
 };
 
