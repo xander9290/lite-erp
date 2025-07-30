@@ -85,8 +85,8 @@ function UserListView({
               </ListItem>
               <ListItem name="partner.name">
                 <div className="d-flex gap-1 align-items-center">
-                  <ImageAvatar imageUrl={user.partner.Image?.url || null} />
-                  {user.partner.name}
+                  <ImageAvatar imageUrl={user.partner?.Image?.url || null} />
+                  {user.partner?.name}
                 </div>
               </ListItem>
               <ListItem name="login">{user.login}</ListItem>
@@ -100,7 +100,7 @@ function UserListView({
                 {formatDate(user.createdAt || null)}
               </ListItem>
               <ListItem name="createdBy">
-                {user.partner.createdBy?.name || "N/A"}
+                {user.partner?.createBy?.name || "N/A"}
               </ListItem>
             </ListItemLink>
           ))}

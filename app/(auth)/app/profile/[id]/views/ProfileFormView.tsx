@@ -20,12 +20,12 @@ type TInputs = Omit<
 >;
 
 interface IInputs extends TInputs {
-  name: string | null;
+  name: string;
 }
 
 type TDataInputs = {
   name: string;
-  email: string | null;
+  email: string;
 };
 
 function ProfileFormView({ user }: { user: UserWithPartner }) {
@@ -92,8 +92,8 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
   useEffect(() => {
     if (user) {
       originalValuesRef.current = {
-        name: user.partner?.name,
-        email: user.partner?.email,
+        name: user.partner?.name || "",
+        email: user.partner?.email || "",
       };
     }
   }, [user]);
@@ -106,7 +106,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
         revert={handleRevert}
         disableForm={isSubmitting}
         notCreate={true}
-        name={user.partner.name}
+        name={user.partner?.name}
         viewForm=""
         formActions={[
           {
@@ -121,7 +121,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
               editable
               remove
               entityType="users"
-              sourceId={user.partner.imageId}
+              sourceId={user.partner?.imageId || null}
               width={125}
               height={125}
               getImageId={handleChangeImage}
@@ -153,7 +153,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
             <Form.Label>Contacto:</Form.Label>
             <Form.Text className="text-capitalize">
               {" "}
-              {user.partner.name}
+              {user.partner?.name}
             </Form.Text>
           </Form.Group>
         </ViewGroup>

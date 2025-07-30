@@ -240,7 +240,7 @@ export const ViewGroup = ({
   disabled?: boolean;
 }) => {
   return (
-    <Col xs="12" md="6">
+    <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
       <fieldset className="p-3 bg-body-tertiary rounded" disabled={disabled}>
         <legend className="fs-5">{title}</legend>
         {children}
