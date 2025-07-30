@@ -9,6 +9,7 @@ import { UserWithPartner } from "@/libs/definitions";
 import { Many2one } from "@/ui/Many2one";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
+import NewOrderPage from "./Lines";
 
 type TInputs = {
   name: string;
@@ -101,7 +102,7 @@ function UserFormView({ user }: { user: UserWithPartner | null }) {
       </ViewGroup>
       <FormBook dKey="cartera">
         <FormPage eventKey="cartera" title="Cartera">
-          <h1>Cartera de clientes</h1>
+          <NewOrderPage />
         </FormPage>
       </FormBook>
     </FormTemplate>
