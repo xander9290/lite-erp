@@ -2,6 +2,7 @@
 
 import { ActionResponse, UserWithPartner } from "@/libs/definitions";
 import { db } from "@/libs/core/db/ExtendedPrisma";
+import { prisma } from "@/libs/prisma";
 
 export async function fetchUsers({
   skip,
@@ -42,6 +43,56 @@ export async function fetchUsers({
     return {
       success: false,
       message: error as string,
+    };
+  }
+}
+
+export async function fetchUser({
+  id,
+}: {
+  id: string | null;
+}): Promise<ActionResponse<UserWithPartner>> {
+  try {
+    if (!id) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        partner: {
+          include: {
+            Image: true,
+            createBy: true,
+            relatedUser: true,
+          },
+        },
+        group: true,
+        partenerLeads: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "USER NOT FOUND",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Usuario encontrado",
+      data: user,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "ERROR: " + error,
     };
   }
 }

@@ -37,7 +37,7 @@ function UserListView({
     >
       <TableTemplate>
         <TableTemplate.Header>
-          <TableTemplate.Column name="options">
+          <TableTemplate.Column name="options" className="text-center">
             <i className="bi bi-gear-fill"></i>
           </TableTemplate.Column>
           <TableTemplate.Column name="name">nombre</TableTemplate.Column>

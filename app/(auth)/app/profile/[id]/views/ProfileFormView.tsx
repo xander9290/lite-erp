@@ -20,7 +20,7 @@ type TInputs = Omit<
 >;
 
 interface IInputs extends TInputs {
-  name: string;
+  name: string | null;
 }
 
 type TDataInputs = {
@@ -38,17 +38,17 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
     reset,
   } = useForm<IInputs>({
     defaultValues: {
-      name: user.partner.name,
-      email: user.partner.email,
-      phone: user.partner.phone,
-      street: user.partner.street,
-      secondStreet: user.partner.secondStreet,
-      town: user.partner.town,
-      city: user.partner.city,
-      province: user.partner.province,
-      country: user.partner.country,
-      zip: user.partner.zip,
-      vat: user.partner.vat,
+      name: user.partner?.name,
+      email: user.partner?.email,
+      phone: user.partner?.phone,
+      street: user.partner?.street,
+      secondStreet: user.partner?.secondStreet,
+      town: user.partner?.town,
+      city: user.partner?.city,
+      province: user.partner?.province,
+      country: user.partner?.country,
+      zip: user.partner?.zip,
+      vat: user.partner?.vat,
       partnerId: user.partnerId,
     },
   });
@@ -86,14 +86,14 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
   };
 
   const handleChangeImage = async (imageId: string | null) => {
-    await userImageUpdate({ imageId, id: user.partner.id });
+    await userImageUpdate({ imageId, id: user.partner?.id || "" });
   };
 
   useEffect(() => {
     if (user) {
       originalValuesRef.current = {
-        name: user.partner.name,
-        email: user.partner.email,
+        name: user.partner?.name,
+        email: user.partner?.email,
       };
     }
   }, [user]);

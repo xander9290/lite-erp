@@ -40,20 +40,10 @@ function SearchHeader({
     }
   };
 
-  // useEffect(() => {
-  //   const currentParams = new URLSearchParams(window.location.search);
-  //   const hasSearch = currentParams.has("search");
-
-  //   if (!searchKey && hasSearch) {
-  //     route.push(cleanedSearch);
-  //     reset({ filterSearch: filterSearch[0].key });
-  //   }
-  // }, [searchKey]);
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <Form.Group className="d-flex">
-        <Form.Select {...register("filterSearch")} size="sm" className="w-25">
+      <Form.Group className="d-flex gap-1">
+        <Form.Select {...register("filterSearch")} className="w-25">
           {filterSearch.map((filter, i) => (
             <option
               key={`filterSearch-${i}-${filter.value}`}

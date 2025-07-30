@@ -14,7 +14,7 @@ export interface ModalBasicProps {
 }
 
 export interface PartnerWithAttrs extends Partner {
-  createdBy: User | null;
+  createBy: User | null;
   relatedUser: User | null;
   Image: Image | null;
 }
@@ -24,6 +24,12 @@ export interface PartnerContacts extends PartnerWithAttrs {
 }
 
 export interface UserWithPartner extends User {
-  partner: PartnerWithAttrs;
-  group: Group;
+  partner: PartnerWithAttrs | null;
+  group: Group | null;
+  partenerLeads: Partner[] | null;
+}
+
+export interface UserWithLeads extends User {
+  partenerLeads: PartnerWithAttrs[];
+  partner: Pick<Partner, "name" | "imageId">;
 }

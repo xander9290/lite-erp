@@ -7,7 +7,7 @@ async function PageUsers({
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const { view_mode: viewMode, page, search, filter } = await searchParams;
+  const { view_mode: viewMode, page, search, filter, id } = await searchParams;
   return (
     <Suspense fallback={<LoadingPage />}>
       <UsersMainView
@@ -15,6 +15,7 @@ async function PageUsers({
         page={page}
         search={search}
         filter={filter}
+        id={id}
       />
     </Suspense>
   );

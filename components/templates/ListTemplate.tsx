@@ -38,7 +38,7 @@ function ListTemplate({
               <Card.Title className="mb-0 text-capitalize">{title}</Card.Title>
             </div>
           </Col>
-          <Col xs="12" md="5">
+          <Col xs="12" sm="10" md="8" lg="7" xl="5" xxl="4">
             <SearchHeader basePath={basePath} filterSearch={filterSearch} />
           </Col>
           <Col xs="12" md="4" className="d-flex justify-content-end"></Col>
