@@ -87,14 +87,33 @@ model Group {
 
     users User[] @relation("RelatedGroup")
 
+    groupLines GroupLine[] @relation("GroupLines")
+
     createUid String? @map("create_uid")
     createBy  User?   @relation("CreateUidGroups", fields: [createUid], references: [id])
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@index([name])
+    @@index([name, displayName])
     @@map("groups")
+}
+
+model GroupLine {
+    id          String @id @default(cuid())
+    name        String @unique
+    displayName String @unique @map("display_name")
+
+    groupId String? @map("group_id")
+    Group   Group?  @relation("GroupLines", fields: [groupId], references: [id])
+
+    createUid String? @map("create_uid")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([name, displayName])
+    @@map("group_line")
 }
 
 model Image {

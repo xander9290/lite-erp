@@ -1,8 +1,9 @@
 import LoadingPage from "@/app/LoadingPage";
-import { Suspense, lazy } from "react";
-const UsersMainView = lazy(() => import("./views/UsersMainView"));
+import { lazy, Suspense } from "react";
 
-async function PageUsers({
+const MainGroupView = lazy(() => import("./views/MainGroupView"));
+
+async function PageGroups({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string }>;
@@ -10,15 +11,15 @@ async function PageUsers({
   const { view_mode: viewMode, page, search, filter, id } = await searchParams;
   return (
     <Suspense fallback={<LoadingPage />}>
-      <UsersMainView
-        viewMode={viewMode}
-        page={page}
-        search={search}
+      <MainGroupView
         filter={filter}
         id={id}
+        search={search}
+        viewMode={viewMode}
+        page={page}
       />
     </Suspense>
   );
 }
 
-export default PageUsers;
+export default PageGroups;

@@ -2,7 +2,7 @@
 
 import { ModalBasicProps } from "@/libs/definitions";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState, lazy } from "react";
 
 import {
   Button,
@@ -17,7 +17,8 @@ import {
   Tab,
   Tabs,
 } from "react-bootstrap";
-import ActivityTemplate from "./ActivityTemplate";
+
+const ActivityTemplate = lazy(() => import("./ActivityTemplate"));
 
 type FormViewTemplateProps = {
   children: React.ReactNode;

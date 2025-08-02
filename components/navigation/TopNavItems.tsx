@@ -108,7 +108,7 @@ function TopNavItems() {
           <i className="bi bi-person me-1 text-warning"></i>
           <span>Usuarios</span>
         </NavDropdown.Item>
-        <NavDropdown.Item>
+        <NavDropdown.Item as={Link} href={`/app/groups?view_mode=list&page=1`}>
           <i className="bi bi-people me-1 text-warning"></i>
           <span>Grupos</span>
         </NavDropdown.Item>
