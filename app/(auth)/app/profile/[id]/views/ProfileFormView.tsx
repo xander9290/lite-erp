@@ -108,12 +108,14 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
         notCreate={true}
         name={user.partner?.name}
         viewForm=""
+        entityName="profile"
         formActions={[
           {
             string: "Cambiar contraseña",
             action: handleChangePassword,
           },
         ]}
+        withActivity={false}
       >
         <ViewGroup>
           <Form.Group className="text-center mb-3">

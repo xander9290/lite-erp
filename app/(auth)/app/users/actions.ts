@@ -3,6 +3,9 @@
 import { ActionResponse, UserWithPartner } from "@/libs/definitions";
 import { db } from "@/libs/core/db/ExtendedPrisma";
 import { prisma } from "@/libs/prisma";
+import { auth } from "@/libs/auth";
+import bcrypt from "bcryptjs";
+import { revalidatePath } from "next/cache";
 
 export async function fetchUsers({
   skip,
@@ -27,6 +30,7 @@ export async function fetchUsers({
           partner: {
             include: {
               Image: true,
+              createBy: true,
             },
           },
           group: true,
@@ -93,6 +97,126 @@ export async function fetchUser({
     return {
       success: false,
       message: "ERROR: " + error,
+    };
+  }
+}
+
+export async function createUser({
+  name,
+  login,
+  groupId,
+  email,
+}: {
+  name: string;
+  login: string;
+  groupId: string | null;
+  email: string | null;
+}): Promise<ActionResponse<unknown>> {
+  try {
+    const session = await auth();
+
+    const hashedPassword = await bcrypt.hash("1234", 10);
+
+    const newPartner = await prisma.partner.create({
+      data: {
+        name,
+        email,
+        displayName: name,
+        createUid: session?.user.id,
+        relatedUser: {
+          create: {
+            name,
+            displayName: `[${login}] ${name}`,
+            login,
+            password: hashedPassword,
+            groupId,
+          },
+        },
+      },
+      include: {
+        relatedUser: true,
+      },
+    });
+
+    if (!newPartner) {
+      return {
+        success: false,
+        message: "USER NOT CREATED",
+      };
+    }
+
+    await prisma.activity.create({
+      data: {
+        string: `Ha creado el usuario ${name}`,
+        entityName: "users",
+        entityId: newPartner.relatedUser?.id,
+        userId: session?.user.id,
+      },
+    });
+
+    return {
+      success: true,
+      message: "USER CREATED SUCCESSFULLY",
+      data: newPartner.relatedUser?.id,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "ERROR: " + error,
+    };
+  }
+}
+
+export async function updateUser({
+  name,
+  login,
+  groupId,
+  email,
+  partnerId,
+}: {
+  name: string;
+  login: string;
+  groupId: string | null;
+  email: string | null;
+  partnerId: string;
+}): Promise<ActionResponse<unknown>> {
+  try {
+    const changedPartner = await prisma.partner.update({
+      where: {
+        id: partnerId,
+      },
+      data: {
+        email,
+        name,
+        displayName: name,
+        relatedUser: {
+          update: {
+            name,
+            displayName: `[${login}] ${name}`,
+            login,
+            groupId,
+          },
+        },
+      },
+    });
+
+    if (!changedPartner) {
+      return {
+        success: false,
+        message: "PARTNER COULD NOT BE UPDATED",
+      };
+    }
+
+    revalidatePath("/app/users");
+
+    return {
+      success: true,
+      message: "Se ha actualizado el usuario",
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
     };
   }
 }

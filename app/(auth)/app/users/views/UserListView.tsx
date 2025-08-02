@@ -84,23 +84,23 @@ function UserListView({
                 </DropdownButton>
               </ListItem>
               <ListItem name="partner.name">
-                <div className="d-flex gap-1 align-items-center">
+                <div className="d-flex gap-2 align-items-center">
                   <ImageAvatar imageUrl={user.partner?.Image?.url || null} />
                   {user.partner?.name}
                 </div>
               </ListItem>
               <ListItem name="login">{user.login}</ListItem>
               <ListItem name="groupId">
-                {!!user.group ? user.group.name : "sin grupo"}
+                {!!user.group ? user.group.name : "no asigando"}
               </ListItem>
               <ListItem name="lastLogin">
-                {formatDate(user.lastLogin || null)}
+                {formatDate(user.lastLogin || null) || "no conectado"}
               </ListItem>
               <ListItem name="createdAt">
                 {formatDate(user.createdAt || null)}
               </ListItem>
               <ListItem name="createdBy">
-                {user.partner?.createBy?.name || "N/A"}
+                {user.partner?.createBy?.name || "bot"}
               </ListItem>
             </ListItemLink>
           ))}

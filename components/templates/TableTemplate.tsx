@@ -76,7 +76,11 @@ export function ListItem({
   name: string;
 }) {
   return (
-    <td valign="middle" title={name} className={`text-nowrap ${className}`}>
+    <td
+      valign="middle"
+      title={name}
+      className={`text-nowrap text-uppercase ${className}`}
+    >
       {children}
     </td>
   );

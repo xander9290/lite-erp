@@ -8,7 +8,7 @@ export const hourClock = (): string => {
 };
 
 export const formatDate = (date: Date | string | number | null) => {
-  if (!date || date === "") return "N/D";
+  if (!date || date === "") return null;
   const d = new Date(date);
   return d.toLocaleDateString("es-MX", {
     day: "2-digit",

@@ -152,7 +152,6 @@ export function Many2one<T extends Many2OneOption>({
           placeholder="Buscar..."
           autoComplete="off"
           isInvalid={!!error}
-          size="sm"
           disabled={disabled}
         />
         <Form.Control.Feedback type="invalid">

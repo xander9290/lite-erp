@@ -1,5 +1,6 @@
 "use server";
 
+import { ActivityWithUser } from "@/components/templates/ActivityTemplate";
 import { auth } from "@/libs/auth";
 import { db } from "@/libs/core/db/ExtendedPrisma";
 import { ActionResponse } from "@/libs/definitions";
@@ -89,6 +90,7 @@ export async function updateUserProfile({
           update: {
             email,
             name,
+            displayName: name,
           },
         },
       },
@@ -147,6 +149,107 @@ export async function userImageUpdate({
     return {
       success: false,
       message: "Error al actualizar imageUrl (catch)",
+    };
+  }
+}
+
+export async function fetchActivity({
+  entityName,
+  entityId,
+}: {
+  entityName: string | null;
+  entityId: string | null;
+}): Promise<ActionResponse<ActivityWithUser[]>> {
+  try {
+    const activities = await prisma.activity.findMany({
+      where: {
+        entityName,
+        entityId,
+      },
+      include: {
+        createBy: {
+          include: {
+            partner: {
+              include: {
+                Image: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    if (!activities) {
+      return {
+        success: false,
+        message: "Error al cargar actividades",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Actividades encontradas",
+      data: activities,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function createActivity({
+  entityId,
+  entityName,
+  string,
+}: {
+  entityId: string;
+  entityName: string;
+  string: string;
+}): Promise<ActionResponse<ActivityWithUser | null>> {
+  try {
+    const session = await auth();
+    const newActivity = await prisma.activity.create({
+      data: {
+        string,
+        entityId,
+        entityName,
+        userId: session?.user.id,
+      },
+      include: {
+        createBy: {
+          include: {
+            partner: {
+              include: {
+                Image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!newActivity) {
+      return {
+        success: false,
+        message: "NOTE NOT CREATED",
+      };
+    }
+
+    return {
+      success: true,
+      message: "NOTE HAS BEEN CREATED",
+      data: newActivity,
+    };
+  } catch (error: unknown) {
+    console.log(error);
+    return {
+      success: false,
+      message: "NOTE NOT CREATED: " + error,
     };
   }
 }

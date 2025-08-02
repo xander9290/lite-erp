@@ -25,8 +25,6 @@ function SearchHeader({
   const route = useRouter();
   const { register, handleSubmit, reset, watch } = useForm<TInputs>();
 
-  const [searchKey] = watch(["searchKey"]);
-
   const cleanedSearch = basePath.replace(/&?search=[^&]*/, ""); // Remove existing search param if any
 
   const onSubmit: SubmitHandler<TInputs> = (data) => {

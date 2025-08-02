@@ -7,102 +7,172 @@ import FormTemplate, {
 } from "@/components/templates/FormTemplate";
 import { UserWithPartner } from "@/libs/definitions";
 import { Many2one } from "@/ui/Many2one";
+import { useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
-import NewOrderPage from "./Lines";
+import { createUser, updateUser } from "../actions";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { createActivity } from "@/app/actions/user-actions";
 
 type TInputs = {
   name: string;
   login: string;
-  password: string;
-  groupId: string | null;
   email: string | null;
+  groupId: string | null;
 };
 
-function UserFormView({ user }: { user: UserWithPartner | null }) {
+function UserFormView({
+  user,
+  modelId,
+}: {
+  user: UserWithPartner | null;
+  modelId: string | null;
+}) {
+  const originalValuesRef = useRef<TInputs | null>(null);
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
     control,
-  } = useForm<TInputs>({
-    defaultValues: {
-      name: user?.partner?.name,
-      login: user?.login,
-      groupId: user?.groupId,
-      email: user?.partner?.email,
-    },
-  });
+    reset,
+  } = useForm<TInputs>();
 
-  const onSubmit: SubmitHandler<TInputs> = async (data) => {};
+  const onSubmit: SubmitHandler<TInputs> = async (data) => {
+    if (modelId === "null") {
+      const res = await createUser(data);
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+      await createActivity({
+        entityId: modelId,
+        entityName: "users",
+        string: `Ha creado el usuario ${data.name}`,
+      });
+      router.replace(`/app/users?view_mode=form&id=${res.data}`);
+    } else {
+      const newData = {
+        ...data,
+        partnerId: user?.partnerId || "",
+      };
+      const res = await updateUser(newData);
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
 
-  const handleRevert = () => {};
+      await createActivity({
+        entityId: modelId || "",
+        entityName: "users",
+        string: "Ha editado el regristro",
+      });
+    }
+  };
+
+  const handleRevert = () => {
+    if (originalValuesRef.current) {
+      reset(originalValuesRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        login: user.login,
+        name: user.partner?.name,
+        email: user.partner?.email,
+        groupId: user.groupId || null,
+      });
+
+      originalValuesRef.current = {
+        login: user.login,
+        name: user.partner?.name || "",
+        email: user.partner?.email || "",
+        groupId: user.groupId || null,
+      };
+    } else {
+      reset({
+        login: "",
+        name: "",
+        email: "",
+        groupId: null,
+      });
+
+      originalValuesRef.current = {
+        login: "",
+        name: "",
+        email: "",
+        groupId: null,
+      };
+    }
+  }, [user]);
 
   return (
     <FormTemplate
-      onSubmit={handleSubmit(onSubmit)}
       revert={handleRevert}
       isDirty={isDirty}
-      disableForm={isSubmitting}
-      name={user?.partner?.name || ""}
+      name={user?.partner?.name}
+      onSubmit={handleSubmit(onSubmit)}
       viewForm="/app/users?view_mode=form&id=null"
+      disableForm={isSubmitting}
+      withActivity={true}
+      entityName="users"
     >
       <ViewGroup title="Acceso">
-        <Form.Group controlId="UserLogin" className="mb-3">
+        <Form.Group controlId="userLogin" className="mb-3">
           <Form.Label>Usuario:</Form.Label>
           <Form.Control
-            {...register("login")}
+            {...register("login", { required: "Este campo es requerido" })}
             type="text"
             autoComplete="off"
-            size="sm"
+            isInvalid={!!errors.login}
           />
+          <Form.Control.Feedback type="invalid">
+            {errors.login?.message}
+          </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group controlId="UserPassword" className="mb-3">
-          <Form.Label>Contraseña:</Form.Label>
-          <Form.Control
-            {...register("password")}
-            type="password"
-            autoComplete="off"
-            size="sm"
-            className="text-center"
+        <Form.Group controlId="userGroupId">
+          <Many2one
+            {...register("groupId")}
+            label="Grupo:"
+            control={control}
+            options={[]}
           />
-        </Form.Group>
-        <Form.Group controlId="UserGroupId" className="mb-3">
-          <Form.Label>Grupo:</Form.Label>
-          <Many2one {...register("groupId")} control={control} options={[]} />
-        </Form.Group>
-        <Form.Group controlId="UserPartnerId">
-          <Form.Label>Contacto:</Form.Label>
-          <Form.Text className="text-uppercase">
-            {" "}
-            {user?.partner?.name}
-          </Form.Text>
         </Form.Group>
       </ViewGroup>
       <ViewGroup title="Información personal">
-        <Form.Group controlId="UserName" className="mb-3">
+        <Form.Group controlId="userName" className="mb-3">
           <Form.Label>Nombre:</Form.Label>
           <Form.Control
-            {...register("name")}
-            type="text"
-            autoComplete="off"
-            size="sm"
+            {...register("name", { required: "Este campo es requerido" })}
             className="text-capitalize"
+            type="text"
+            isInvalid={!!errors.name}
+            autoComplete="off"
           />
+          <Form.Control.Feedback type="invalid">
+            {errors.name?.message}
+          </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group controlId="UserEmail" className="mb-3">
+        <Form.Group controlId="userEmail" className="mb-3">
           <Form.Label>Correo:</Form.Label>
           <Form.Control
             {...register("email")}
-            type="text"
+            type="email"
             autoComplete="off"
-            size="sm"
           />
         </Form.Group>
       </ViewGroup>
-      <FormBook dKey="cartera">
-        <FormPage eventKey="cartera" title="Cartera">
-          <NewOrderPage />
+      <FormBook dKey="leads">
+        <FormPage title="Cartera" eventKey="leads">
+          <h2>Cartera de clientes</h2>
+        </FormPage>
+        <FormPage title="Otra información" eventKey="otherInfo">
+          <h3>otra información</h3>
         </FormPage>
       </FormBook>
     </FormTemplate>

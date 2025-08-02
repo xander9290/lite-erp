@@ -1,110 +1,128 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generate/prisma"
+    provider = "prisma-client-js"
+    output   = "../generate/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Partner {
-  id          String @id @default(cuid())
-  name        String
-  displayName String @unique @map("display_name")
+    id          String @id @default(cuid())
+    name        String
+    displayName String @unique @map("display_name")
 
-  // no requeridos
-  email        String?
-  phone        String?
-  street       String?
-  secondStreet String? @map("second_street")
-  town         String?
-  city         String?
-  province     String?
-  country      String?
-  zip          Int?
-  vat          String?
+    // no requeridos
+    email        String?
+    phone        String?
+    street       String?
+    secondStreet String? @map("second_street")
+    town         String?
+    city         String?
+    province     String?
+    country      String?
+    zip          Int?
+    vat          String?
 
-  // campos de modelo 
-  state       String?
-  displayType String  @default("internal") @map("display_type")
+    // campos de modelo 
+    state       String?
+    displayType String  @default("internal") @map("display_type")
 
-  relatedUser User?
+    relatedUser User? @relation("RelatedUser")
 
-  userId    String? @map("user_id")
-  userAgent User?   @relation("UserAgent", fields: [userId], references: [id])
+    userId    String? @map("user_id")
+    userAgent User?   @relation("UserAgent", fields: [userId], references: [id])
 
-  createUid String? @map("create_uid")
-  createBy  User?   @relation("CreateUidPartners", fields: [createUid], references: [id])
+    createUid String? @map("create_uid")
+    createBy  User?   @relation("CreateUidPartners", fields: [createUid], references: [id])
 
-  imageId String? @unique @map("image_id")
-  Image   Image?  @relation("EntityImage", fields: [imageId], references: [id])
+    imageId String? @unique @map("image_id")
+    Image   Image?  @relation("EntityImage", fields: [imageId], references: [id])
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([name, displayName, phone])
-  @@map("partners")
+    @@index([name, displayName, phone])
+    @@map("partners")
 }
 
 model User {
-  id          String  @id @default(cuid())
-  login       String  @unique
-  password    String
-  name        String? @unique
-  displayName String  @unique @map("display_name")
+    id          String  @id @default(cuid())
+    login       String  @unique
+    password    String
+    name        String? @unique
+    displayName String  @unique @map("display_name")
 
-  // modelos creados
-  createdPartners Partner[] @relation("CreateUidPartners")
-  createdGroups   Group[]   @relation("CreateUidGroups")
+    // modelos creados
+    createdPartners Partner[] @relation("CreateUidPartners")
+    createdGroups   Group[]   @relation("CreateUidGroups")
 
-  // modelos a cargo
-  partenerLeads Partner[] @relation("UserAgent")
+    // modelos a cargo
+    partenerLeads Partner[] @relation("UserAgent")
 
-  // modelos relacionados
-  groupId String? @map("group_id")
-  group   Group?  @relation(fields: [groupId], references: [id])
+    partnerId String?  @unique
+    partner   Partner? @relation("RelatedUser", fields: [partnerId], references: [id])
 
-  partnerId String?  @unique
-  partner   Partner? @relation(fields: [partnerId], references: [id])
+    // modelos relacionados
+    groupId String? @map("group_id")
+    group   Group?  @relation("RelatedGroup", fields: [groupId], references: [id])
 
-  // indicadores
-  lastLogin DateTime? @map("last_login")
+    activity Activity[]
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    // indicadores
+    lastLogin DateTime? @map("last_login")
 
-  @@index([displayName])
-  @@map("users")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([displayName])
+    @@map("users")
 }
 
 model Group {
-  id          String @id @default(cuid())
-  name        String @unique
-  displayName String @unique @map("display_name")
+    id          String @id @default(cuid())
+    name        String @unique
+    displayName String @unique @map("display_name")
 
-  users User[]
+    users User[] @relation("RelatedGroup")
 
-  createUid String? @map("create_uid")
-  createBy  User?   @relation("CreateUidGroups", fields: [createUid], references: [id])
+    createUid String? @map("create_uid")
+    createBy  User?   @relation("CreateUidGroups", fields: [createUid], references: [id])
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([name])
-  @@map("groups")
+    @@index([name])
+    @@map("groups")
 }
 
 model Image {
-  id         String  @id @default(cuid())
-  url        String
-  publicId   String  @map("public_id")
-  entityType String?
+    id         String  @id @default(cuid())
+    url        String
+    publicId   String  @map("public_id")
+    entityType String?
 
-  Partner Partner? @relation("EntityImage")
+    Partner Partner? @relation("EntityImage")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("images")
+    @@map("images")
+}
+
+model Activity {
+    id     String @id @default(cuid())
+    string String
+
+    entityName String? @map("entity_name")
+    entityId   String? @map("entity_id")
+
+    userId   String? @map("user_id")
+    createBy User?   @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("activity")
 }

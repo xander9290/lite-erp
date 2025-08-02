@@ -1,8 +1,8 @@
 "use client";
 
 import { ModalBasicProps } from "@/libs/definitions";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 import {
   Button,
@@ -17,7 +17,7 @@ import {
   Tab,
   Tabs,
 } from "react-bootstrap";
-import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
+import ActivityTemplate from "./ActivityTemplate";
 
 type FormViewTemplateProps = {
   children: React.ReactNode;
@@ -31,6 +31,8 @@ type FormViewTemplateProps = {
   isDirty: boolean;
   revert: () => void;
   notCreate?: boolean;
+  withActivity?: boolean;
+  entityName: string;
 };
 
 type TFormActions = {
@@ -58,11 +60,14 @@ function FormTemplate({
   isDirty,
   revert,
   notCreate,
+  withActivity,
+  entityName,
 }: FormViewTemplateProps) {
   const searchParams = useSearchParams();
   const model_id = searchParams.get("id");
 
   const router = useRouter();
+  const pathName = usePathname();
 
   const [modalConfirmFormAction, setModalConfirmFormAction] =
     useState<ModalBasicProps>({
@@ -84,8 +89,7 @@ function FormTemplate({
       <Col xs="12" md="8" className="h-100">
         <Form
           onSubmit={onSubmit}
-          style={{ height: "95%" }}
-          className="card d-flex flex-column shadow"
+          className="card d-flex flex-column shadow h-100"
         >
           <fieldset
             className="card-header d-flex justify-content-between"
@@ -218,8 +222,12 @@ function FormTemplate({
           </fieldset>
         </Form>
       </Col>
-      <Col xs="12" md="4">
-        En esta parte irá el historial
+      <Col xs="12" md="4" className="h-100">
+        <Suspense fallback={<Spinner animation="border" size="sm" />}>
+          {withActivity && (
+            <ActivityTemplate entityId={model_id} entityName={entityName} />
+          )}
+        </Suspense>
       </Col>
       <ModalActionConfirm
         show={modalConfirmFormAction.show}
@@ -245,7 +253,7 @@ export const ViewGroup = ({
   return (
     <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
       <fieldset className="p-3 bg-body-tertiary rounded" disabled={disabled}>
-        <legend className="fs-5">{title}</legend>
+        <legend className="fs-4">{title}</legend>
         {children}
       </fieldset>
     </Col>

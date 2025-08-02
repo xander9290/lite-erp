@@ -35,8 +35,6 @@ export const authOptions = {
           user.password
         );
 
-        console.log(verifiedPswd);
-
         if (!verifiedPswd) {
           throw new Error("Credenciales inválidas");
         }
@@ -45,12 +43,17 @@ export const authOptions = {
           lastLogin: new Date(),
         });
 
+        let imgUrl = null;
+        if (user.partner.Image) {
+          imgUrl = user.partner.Image.url;
+        }
+
         return {
           id: user.id,
           login: user.login,
           name: user.partner.name,
           partnerId: user.partnerId,
-          imageUrl: user.partner.Image.url,
+          imageUrl: imgUrl,
         };
       },
     }),

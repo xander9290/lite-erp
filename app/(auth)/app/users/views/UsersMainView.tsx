@@ -26,8 +26,9 @@ async function UsersMainView({
 
   const users: UserWithPartner[] = res.data || [];
 
-  const response = await fetchUser({ id });
-  const user = response.data || null;
+  const resUser = await fetchUser({ id });
+
+  const user = resUser.data || null;
 
   if (viewMode === "list") {
     return (
@@ -39,7 +40,7 @@ async function UsersMainView({
       />
     );
   } else if (viewMode === "form") {
-    return <UserFormView user={user} />;
+    return <UserFormView modelId={id} user={user} />;
   } else {
     return <NotFound />;
   }
