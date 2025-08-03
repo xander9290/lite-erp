@@ -1,10 +1,10 @@
 "use server";
-
 import NotFound from "@/app/not-found";
 import { fetchUser, fetchUsers } from "../actions";
 import UserListView from "./UserListView";
 import { UserWithPartner } from "@/libs/definitions";
 import UserFormView from "./UserFormView";
+import { db } from "@/libs/core/db/ExtendedPrisma";
 
 async function UsersMainView({
   viewMode,
@@ -30,6 +30,11 @@ async function UsersMainView({
 
   const user = resUser.data || null;
 
+  const groups = await db.find("group", ["or", ["name", "ilike", ""]], {
+    take: 8,
+    orderBy: { name: "asc" },
+  });
+
   if (viewMode === "list") {
     return (
       <UserListView
@@ -40,7 +45,7 @@ async function UsersMainView({
       />
     );
   } else if (viewMode === "form") {
-    return <UserFormView modelId={id} user={user} />;
+    return <UserFormView modelId={id} user={user} groups={groups} />;
   } else {
     return <NotFound />;
   }

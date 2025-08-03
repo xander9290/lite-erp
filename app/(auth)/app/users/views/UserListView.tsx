@@ -33,10 +33,11 @@ function UserListView({
       filterSearch={[
         { key: "nombre", value: "Nombre" },
         { key: "partner.name", value: "Contacto" },
+        { key: "group.name", value: "Grupo" },
       ]}
     >
       <TableTemplate>
-        <TableTemplate.Header>
+        <TableTemplate.Header sticky={true}>
           <TableTemplate.Column name="options" className="text-center">
             <i className="bi bi-gear-fill"></i>
           </TableTemplate.Column>

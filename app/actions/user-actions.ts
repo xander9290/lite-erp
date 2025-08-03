@@ -7,6 +7,10 @@ import { ActionResponse } from "@/libs/definitions";
 import { prisma } from "@/libs/prisma";
 import bcrypt from "bcryptjs";
 
+// Add finally blocks with console.log for each function
+
+// changeUserPassword
+// (already has try/catch, add finally)
 export async function changeUserPassword({
   currentPassword,
   newPassword,
@@ -65,9 +69,59 @@ export async function changeUserPassword({
       success: false,
       message: "Error al cambiar la contraseña",
     };
+  } finally {
+    console.log("Function changeUserPassword execute");
   }
 }
 
+// changePassword
+export async function changePassword({
+  newPassword,
+  modelId,
+}: {
+  newPassword: string;
+  modelId: string | null;
+}): Promise<ActionResponse<unknown>> {
+  try {
+    if (!modelId) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    const changedUser = await prisma.user.update({
+      where: {
+        id: modelId,
+      },
+      data: {
+        password: hashedNewPassword,
+      },
+    });
+
+    if (!changedUser) {
+      return {
+        success: false,
+        message: "Error al cambiar la contraseña",
+      };
+    }
+    return {
+      success: true,
+      message: "Contraseña actualizada correctamente",
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  } finally {
+    console.log("Function changePassword execute");
+  }
+}
+
+// updateUserProfile
 export async function updateUserProfile({
   name,
   email,
@@ -113,9 +167,12 @@ export async function updateUserProfile({
       success: false,
       message: "Error al cambiar la contraseña",
     };
+  } finally {
+    console.log("Function updateUserProfile execute");
   }
 }
 
+// userImageUpdate
 export async function userImageUpdate({
   imageId,
   id,
@@ -150,9 +207,12 @@ export async function userImageUpdate({
       success: false,
       message: "Error al actualizar imageUrl (catch)",
     };
+  } finally {
+    console.log("Function userImageUpdate execute");
   }
 }
 
+// fetchActivity
 export async function fetchActivity({
   entityName,
   entityId,
@@ -199,9 +259,12 @@ export async function fetchActivity({
       success: false,
       message: "Error: " + error,
     };
+  } finally {
+    console.log("Function fetchActivity execute");
   }
 }
 
+// createActivity
 export async function createActivity({
   entityId,
   entityName,
@@ -251,5 +314,7 @@ export async function createActivity({
       success: false,
       message: "NOTE NOT CREATED: " + error,
     };
+  } finally {
+    console.log("Function createActivity execute");
   }
 }

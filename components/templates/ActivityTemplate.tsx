@@ -62,7 +62,7 @@ function ActivityTemplate({
 
   const onSubmit: SubmitHandler<TInputs> = async (data) => {
     const newData = {
-      string: data.string,
+      string: `-${data.string}`,
       entityId: entityId || "",
       entityName: entityName || "",
     };

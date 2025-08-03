@@ -1,7 +1,7 @@
 "use client";
 
 import { ModalBasicProps } from "@/libs/definitions";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, lazy } from "react";
 
 import {
@@ -68,7 +68,6 @@ function FormTemplate({
   const model_id = searchParams.get("id");
 
   const router = useRouter();
-  const pathName = usePathname();
 
   const [modalConfirmFormAction, setModalConfirmFormAction] =
     useState<ModalBasicProps>({
@@ -185,9 +184,7 @@ function FormTemplate({
             disabled={disableForm}
           >
             <div className="d-flex justify-content-between align-items-end mb-2">
-              <h2 className="card-title fw-bolder text-capitalize">
-                {name ?? "nuevo"}
-              </h2>
+              <h2 className="card-title fw-bolder">{name ?? "nuevo"}</h2>
               {disableForm && <Spinner animation="border" />}
               {/* STATEBAR - Desktop */}
               <ListGroup horizontal className="d-none d-md-flex">

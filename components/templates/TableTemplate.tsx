@@ -17,9 +17,15 @@ function TableTemplate({
   );
 }
 
-function ListViewHeader({ children }: { children: React.ReactNode }) {
+function ListViewHeader({
+  children,
+  sticky,
+}: {
+  children: React.ReactNode;
+  sticky?: boolean;
+}) {
   return (
-    <thead className="sticky-top" style={{ zIndex: 1 }}>
+    <thead className={`${sticky ? "sticky-top" : ""}`} style={{ zIndex: 1 }}>
       <tr>{children}</tr>
     </thead>
   );
@@ -76,11 +82,7 @@ export function ListItem({
   name: string;
 }) {
   return (
-    <td
-      valign="middle"
-      title={name}
-      className={`text-nowrap text-uppercase ${className}`}
-    >
+    <td valign="middle" title={name} className={`text-nowrap ${className}`}>
       {children}
     </td>
   );

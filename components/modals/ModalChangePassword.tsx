@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button, Form, Modal, Spinner } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-type TModalProps = {
+export type TModalProps = {
   show: boolean;
   onHide: () => void;
   modelId: string | null;
