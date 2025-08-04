@@ -1,5 +1,5 @@
 import NotFound from "@/app/not-found";
-import { fetchGroups } from "../actions";
+import { fetchGroups, fetchGroup } from "../actions";
 import GroupFormView from "./GroupFormView";
 import GroupListView from "./GroupListView";
 
@@ -33,8 +33,8 @@ async function MainGroupView({
 
   // Si se proporciona un ID, busca el grupo específico
   let group = null;
-  if (id) {
-    const groupRes = await (await import("../actions")).fetchGroup(id);
+  if (id && id !== "null") {
+    const groupRes = await fetchGroup(id);
     if (!groupRes.success) {
       return <div>Error al cargar el grupo: {groupRes.message}</div>;
     }
