@@ -67,7 +67,7 @@ export function Many2one<T extends Many2OneOption>({
   }, [query, options]);
 
   const handleSelect = (option: T) => {
-    const newValue = typeof value === "object" ? option : option.id;
+    const newValue = typeof value === "object" ? option.id : option.id;
     onChange(newValue);
     setQuery(option.name ?? option.displayName ?? "");
     setIsOpen(false);
@@ -133,57 +133,54 @@ export function Many2one<T extends Many2OneOption>({
 
   return (
     <div ref={containerRef}>
-      <Form.Group className="mb-3" controlId={`many2one-${name}`}>
-        {label && <Form.Label>{label}</Form.Label>}
-        <Form.Control
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-            setHighlightedIndex(0);
-          }}
-          onFocus={() => {
-            setIsOpen(true);
-            setHighlightedIndex(0);
-          }}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="Buscar..."
-          autoComplete="off"
-          isInvalid={!!error}
-          disabled={disabled}
-        />
-        <Form.Control.Feedback type="invalid">
-          {error?.message}
-        </Form.Control.Feedback>
+      <Form.Control
+        ref={inputRef}
+        type="text"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setIsOpen(true);
+          setHighlightedIndex(0);
+        }}
+        onFocus={() => {
+          setIsOpen(true);
+          setHighlightedIndex(0);
+        }}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        placeholder="Buscar..."
+        autoComplete="off"
+        isInvalid={!!error}
+        disabled={disabled}
+      />
+      <Form.Control.Feedback type="invalid">
+        {error?.message}
+      </Form.Control.Feedback>
 
-        {isOpen && filteredOptions.length > 0 && (
-          <Dropdown show className="w-100 mt-1">
-            <Dropdown.Menu
-              style={{
-                width: "100%",
-                maxHeight: "200px",
-                overflowY: "auto",
-                overflowX: "hidden",
-                zIndex: 1050,
-              }}
-              className="p-0"
-            >
-              {filteredOptions.slice(0, 10).map((option, index) => (
-                <Dropdown.Item
-                  key={option.id}
-                  onMouseDown={() => handleSelect(option)}
-                  active={index === highlightedIndex}
-                >
-                  {option.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        )}
-      </Form.Group>
+      {isOpen && filteredOptions.length > 0 && (
+        <Dropdown show className="w-100 mt-1">
+          <Dropdown.Menu
+            style={{
+              width: "100%",
+              maxHeight: "200px",
+              overflowY: "auto",
+              overflowX: "hidden",
+              zIndex: 1050,
+            }}
+            className="p-0"
+          >
+            {filteredOptions.slice(0, 10).map((option, index) => (
+              <Dropdown.Item
+                key={option.id}
+                onMouseDown={() => handleSelect(option)}
+                active={index === highlightedIndex}
+              >
+                {option.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
     </div>
   );
 }
