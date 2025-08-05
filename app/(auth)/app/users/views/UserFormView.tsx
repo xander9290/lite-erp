@@ -167,7 +167,6 @@ function UserFormView({
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
               {...register("name", { required: "Este campo es requerido" })}
-              className="text-capitalize"
               type="text"
               isInvalid={!!errors.name}
               autoComplete="off"
