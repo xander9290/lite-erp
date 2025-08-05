@@ -2,6 +2,7 @@ import NotFound from "@/app/not-found";
 import { fetchGroups, fetchGroup } from "../actions";
 import GroupFormView from "./GroupFormView";
 import GroupListView from "./GroupListView";
+import { userMany2one } from "../../users/actions";
 
 async function MainGroupView({
   viewMode,
@@ -41,6 +42,10 @@ async function MainGroupView({
     group = groupRes.data;
   }
 
+  const usersMany2one = await userMany2one({
+    domain: ["and", ["groupId", "=", null]],
+  });
+
   if (viewMode === "list") {
     return (
       <GroupListView
@@ -52,7 +57,13 @@ async function MainGroupView({
       />
     );
   } else if (viewMode === "form") {
-    return <GroupFormView group={group || null} />;
+    return (
+      <GroupFormView
+        modelId={id}
+        group={group || null}
+        usersMany2one={usersMany2one.data || []}
+      />
+    );
   } else {
     return <NotFound />; // Si el modo de vista no es válido, muestra una página 404
   }

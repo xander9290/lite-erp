@@ -111,7 +111,11 @@ function FormTemplate({
                 title="Guardar"
                 disabled={!isDirty}
               >
-                <i className="bi bi-cloud-arrow-up-fill"></i>
+                {disableForm ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  <i className="bi bi-cloud-arrow-up-fill"></i>
+                )}
               </Button>
               <Button
                 variant="secondary"
@@ -185,7 +189,6 @@ function FormTemplate({
           >
             <div className="d-flex justify-content-between align-items-end mb-2">
               <h2 className="card-title fw-bolder">{name ?? "nuevo"}</h2>
-              {disableForm && <Spinner animation="border" />}
               {/* STATEBAR - Desktop */}
               <ListGroup horizontal className="d-none d-md-flex">
                 {formStates?.map((st, i) => (

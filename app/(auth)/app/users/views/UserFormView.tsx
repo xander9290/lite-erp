@@ -153,11 +153,12 @@ function UserFormView({
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="userGroupId">
+            <Form.Label>Grupo:</Form.Label>
             <Many2one<GroupWithAttrs>
               {...register("groupId")}
-              label="Grupo:"
               control={control}
               options={groups || []}
+              callBackMode="id"
             />
           </Form.Group>
         </ViewGroup>

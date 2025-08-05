@@ -6,6 +6,8 @@ import { prisma } from "@/libs/prisma";
 import { auth } from "@/libs/auth";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { User } from "@/generate/prisma";
+import { Domain } from "@/libs/core/db/domainParser";
 
 export async function fetchUsers({
   skip,
@@ -212,6 +214,37 @@ export async function updateUser({
     return {
       success: true,
       message: "Se ha actualizado el usuario",
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function userMany2one({
+  domain,
+}: {
+  domain: Domain;
+}): Promise<ActionResponse<User[]>> {
+  try {
+    const users = await db.find("user", domain, {
+      take: 10,
+      orderBy: { name: "asc" },
+    });
+
+    if (!users) {
+      return {
+        success: false,
+        message: "No se encontraron usuarios",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Usuarios encontrados",
+      data: users,
     };
   } catch (error: unknown) {
     return {

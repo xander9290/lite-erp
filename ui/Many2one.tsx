@@ -17,6 +17,8 @@ type Props<T extends Many2OneOption> = {
   control: Control<any>;
   options: T[] | null;
   disabled?: boolean;
+  size?: "sm" | "lg";
+  callBackMode: "object" | "id";
 };
 
 export function Many2one<T extends Many2OneOption>({
@@ -25,6 +27,8 @@ export function Many2one<T extends Many2OneOption>({
   control,
   options,
   disabled,
+  size,
+  callBackMode = "id",
 }: Props<T>) {
   const {
     field: { value, onChange },
@@ -67,7 +71,14 @@ export function Many2one<T extends Many2OneOption>({
   }, [query, options]);
 
   const handleSelect = (option: T) => {
-    const newValue = typeof value === "object" ? option.id : option.id;
+    const newValue =
+      callBackMode === "id"
+        ? typeof value === "object"
+          ? option.id
+          : option.id
+        : typeof value === "object"
+        ? option
+        : option;
     onChange(newValue);
     setQuery(option.name ?? option.displayName ?? "");
     setIsOpen(false);
@@ -148,10 +159,11 @@ export function Many2one<T extends Many2OneOption>({
         }}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        placeholder="Buscar..."
+        placeholder={label || "Buscar..."}
         autoComplete="off"
         isInvalid={!!error}
         disabled={disabled}
+        size={size}
       />
       <Form.Control.Feedback type="invalid">
         {error?.message}
