@@ -133,10 +133,12 @@ export async function updateGroup({
   modelId,
   userIds,
   name,
+  active,
 }: {
   modelId: string;
   userIds: User[];
   name: string;
+  active: boolean;
 }): Promise<ActionResponse<string>> {
   try {
     const newGroup = await prisma.group.update({
@@ -146,6 +148,7 @@ export async function updateGroup({
       data: {
         name,
         displayName: name,
+        active,
         users: {
           connect: userIds.map((user) => ({ id: user.id })),
         },

@@ -108,11 +108,13 @@ export async function createUser({
   login,
   groupId,
   email,
+  active,
 }: {
   name: string;
   login: string;
   groupId: string | null;
   email: string | null;
+  active: boolean;
 }): Promise<ActionResponse<unknown>> {
   try {
     const session = await auth();
@@ -125,6 +127,7 @@ export async function createUser({
         email,
         displayName: name,
         createUid: session?.user.id,
+        active,
         relatedUser: {
           create: {
             name,
@@ -132,6 +135,7 @@ export async function createUser({
             login,
             password: hashedPassword,
             groupId,
+            active,
           },
         },
       },
@@ -175,12 +179,14 @@ export async function updateUser({
   groupId,
   email,
   partnerId,
+  active,
 }: {
   name: string;
   login: string;
   groupId: string | null;
   email: string | null;
   partnerId: string;
+  active: boolean;
 }): Promise<ActionResponse<unknown>> {
   try {
     const changedPartner = await prisma.partner.update({
@@ -191,12 +197,14 @@ export async function updateUser({
         email,
         name,
         displayName: name,
+        active,
         relatedUser: {
           update: {
             name,
             displayName: `[${login}] ${name}`,
             login,
             groupId,
+            active,
           },
         },
       },

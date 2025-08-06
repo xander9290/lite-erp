@@ -43,7 +43,7 @@ async function MainGroupView({
   }
 
   const usersMany2one = await userMany2one({
-    domain: ["and", ["groupId", "=", null]],
+    domain: ["and", ["groupId", "=", null], ["active", "=", true]],
   });
 
   if (viewMode === "list") {

@@ -22,6 +22,7 @@ type TInputs = {
   login: string;
   email: string | null;
   groupId: string | null;
+  active: boolean;
 };
 
 function UserFormView({
@@ -96,6 +97,7 @@ function UserFormView({
         name: user.partner?.name,
         email: user.partner?.email,
         groupId: user.groupId || null,
+        active: user.active,
       });
 
       originalValuesRef.current = {
@@ -103,6 +105,7 @@ function UserFormView({
         name: user.partner?.name || "",
         email: user.partner?.email || "",
         groupId: user.groupId || null,
+        active: user.active,
       };
     } else {
       reset({
@@ -117,6 +120,7 @@ function UserFormView({
         name: "",
         email: "",
         groupId: null,
+        active: true,
       };
     }
   }, [user]);
@@ -136,8 +140,10 @@ function UserFormView({
           {
             string: "Restablecer contraseña",
             action: () => handleChangePassword(),
+            disable: user?.active === false,
           },
         ]}
+        active={user?.active}
       >
         <ViewGroup title="Acceso">
           <Form.Group controlId="userLogin" className="mb-3">
@@ -147,18 +153,28 @@ function UserFormView({
               type="text"
               autoComplete="off"
               isInvalid={!!errors.login}
+              disabled={user?.active === false}
             />
             <Form.Control.Feedback type="invalid">
               {errors.login?.message}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="userGroupId">
+          <Form.Group controlId="userGroupId" className="mb-3">
             <Form.Label>Grupo:</Form.Label>
             <Many2one<GroupWithAttrs>
               {...register("groupId")}
               control={control}
               options={groups || []}
               callBackMode="id"
+              disabled={user?.active === false}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Check
+              type="switch"
+              label="Activo"
+              id="Activo"
+              {...register("active")}
             />
           </Form.Group>
         </ViewGroup>
@@ -170,6 +186,7 @@ function UserFormView({
               type="text"
               isInvalid={!!errors.name}
               autoComplete="off"
+              disabled={user?.active === false}
             />
             <Form.Control.Feedback type="invalid">
               {errors.name?.message}
@@ -181,6 +198,7 @@ function UserFormView({
               {...register("email")}
               type="email"
               autoComplete="off"
+              disabled={user?.active === false}
             />
           </Form.Group>
         </ViewGroup>

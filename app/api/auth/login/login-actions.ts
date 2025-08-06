@@ -2,6 +2,7 @@
 
 import { signIn } from "@/libs/auth";
 import { ActionResponse } from "@/libs/definitions";
+import { prisma } from "@/libs/prisma";
 
 export const userLogin = async ({
   login,
@@ -16,6 +17,19 @@ export const userLogin = async ({
       password,
       redirect: false,
     });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        login,
+      },
+    });
+
+    if (!user?.active) {
+      return {
+        success: false,
+        message: "Usuario inactivo",
+      };
+    }
 
     return {
       success: true,

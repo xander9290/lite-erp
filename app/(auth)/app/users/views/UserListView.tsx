@@ -9,7 +9,7 @@ import { UserWithPartner } from "@/libs/definitions";
 import { formatDate } from "@/libs/helpers";
 import ImageAvatar from "@/ui/ImageAvatar";
 import Link from "next/link";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Badge, Dropdown, DropdownButton } from "react-bootstrap";
 
 function UserListView({
   page,
@@ -38,11 +38,9 @@ function UserListView({
     >
       <TableTemplate>
         <TableTemplate.Header sticky={true}>
-          <TableTemplate.Column name="options" className="text-center">
-            <i className="bi bi-gear-fill"></i>
-          </TableTemplate.Column>
           <TableTemplate.Column name="name">nombre</TableTemplate.Column>
           <TableTemplate.Column name="login">usuario</TableTemplate.Column>
+          <TableTemplate.Column name="login">activo</TableTemplate.Column>
           <TableTemplate.Column name="groupId">Grupo</TableTemplate.Column>
           <TableTemplate.Column name="lastLogin">
             última conexion
@@ -60,30 +58,6 @@ function UserListView({
               key={user.id}
               path={`/app/users?view_mode=form&id=${user.id}`}
             >
-              <ListItem name="userActios" className="text-center">
-                <DropdownButton
-                  variant="light"
-                  size="sm"
-                  title={<i className="bi bi-gear-fill"></i>}
-                  className="p-0"
-                >
-                  <Dropdown.Item
-                    as={Link}
-                    href={`/app/users?view_mode=form&id=${user.id}`}
-                  >
-                    <i className="bi bi-pencil-square me-1"></i>
-                    Editar
-                  </Dropdown.Item>
-                  <Dropdown.Item as={"button"}>
-                    <i className="bi bi-archive-fill me-1"></i>
-                    Archivar
-                  </Dropdown.Item>
-                  <Dropdown.Item as={"button"}>
-                    <i className="bi bi-trash-fill me-1"></i>
-                    Eliminar
-                  </Dropdown.Item>
-                </DropdownButton>
-              </ListItem>
               <ListItem name="partner.name">
                 <div className="d-flex gap-2 align-items-center">
                   <ImageAvatar imageUrl={user.partner?.Image?.url || null} />
@@ -91,6 +65,13 @@ function UserListView({
                 </div>
               </ListItem>
               <ListItem name="login">{user.login}</ListItem>
+              <ListItem name="active">
+                {user.active ? (
+                  <Badge bg="success">Activo</Badge>
+                ) : (
+                  <Badge bg="danger">Inactivo</Badge>
+                )}
+              </ListItem>
               <ListItem name="groupId">
                 {!!user.group ? user.group.name : "no asigando"}
               </ListItem>

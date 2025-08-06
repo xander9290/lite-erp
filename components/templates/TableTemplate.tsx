@@ -57,13 +57,16 @@ function ListViewContent({ children }: { children: React.ReactNode }) {
 export function ListItemLink({
   children,
   path,
+  className,
 }: {
   children: React.ReactNode;
   path: string;
+  className?: string;
 }) {
   const router = useRouter();
   return (
     <tr
+      className={className}
       style={{ cursor: "pointer", userSelect: "none" }}
       onDoubleClick={() => router.push(path)}
     >

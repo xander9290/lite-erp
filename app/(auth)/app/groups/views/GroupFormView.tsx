@@ -26,6 +26,7 @@ type TInputs = {
   name: string;
   userId: User | null;
   userIds: User[];
+  active: boolean;
 };
 
 function GroupFormView({
@@ -78,6 +79,7 @@ function GroupFormView({
         name: data.name,
         userIds: data.userIds,
         modelId: modelId || "",
+        active: data.active,
       };
 
       const res = await updateGroup(newData);
@@ -88,9 +90,9 @@ function GroupFormView({
       }
 
       await createActivity({
-        entityId: session?.user.id,
+        entityId: modelId || "",
         entityName: "groups",
-        string: `Ha editado el grupo ${originalValuesRef.current?.name} a ${data.name}`,
+        string: `Ha editado el grupo`,
       });
 
       router.replace(`/app/groups?view_mode=form&id=${res.data}`);
@@ -125,7 +127,7 @@ function GroupFormView({
           position: "top-right",
         });
         await createActivity({
-          entityId: session?.user.id,
+          entityId: modelId,
           entityName: "groups",
           string: `Ha removido un usuario`,
         });
@@ -142,12 +144,13 @@ function GroupFormView({
         name: group.name || "",
         userId: null,
         userIds: group.users,
+        active: group.active,
       };
       originalValuesRef.current = initialValues;
       reset(initialValues);
     } else {
       originalValuesRef.current = null;
-      reset({ name: "", userId: null, userIds: [] });
+      reset({ name: "", userId: null, userIds: [], active: true });
     }
   }, [group]);
 
@@ -162,9 +165,10 @@ function GroupFormView({
       withActivity={true}
       onSubmit={handleSubmit(onSubmit)}
       name={group?.name || ""}
+      active={group?.active}
     >
       <ViewGroup>
-        <Form.Group>
+        <Form.Group controlId="GroupName" className="mb-3">
           <Form.Label>Nombre</Form.Label>
           <Form.Control
             type="text"
@@ -172,10 +176,14 @@ function GroupFormView({
             {...register("name", { required: "El nombre es requerido" })}
             isInvalid={!!errors.name}
             autoComplete="off"
+            disabled={group?.active === false}
           />
           <Form.Control.Feedback type="invalid">
             {errors.name?.message}
           </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group controlId="GroupActive">
+          <Form.Check {...register("active")} label="Activo" id="Activo" />
         </Form.Group>
       </ViewGroup>
       <FormBook dKey="lines">
@@ -194,6 +202,7 @@ function GroupFormView({
               label="Añadir usuario"
               size="sm"
               callBackMode="object"
+              disabled={group?.active === false}
             />
             <Button
               size="sm"

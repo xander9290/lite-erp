@@ -1,7 +1,7 @@
 "use client";
 
 import KanbanContainer from "@/ui/KanbanContainer";
-import { Container, Row } from "react-bootstrap";
+import { Badge, Container, Row } from "react-bootstrap";
 import { GroupWithAttrs } from "../actions";
 
 function GroupKanbanView({ groups }: { groups: GroupWithAttrs[] | null }) {
@@ -15,6 +15,7 @@ function GroupKanbanView({ groups }: { groups: GroupWithAttrs[] | null }) {
           >
             <div className="d-flex justify-content-between align-items-center">
               <h5 className="card-title fw-bold">{group.name}</h5>
+              {!group.active && <Badge bg="danger">Inactivo</Badge>}
               <h6>
                 <strong>Usuarios: </strong>
                 {group.users.length}

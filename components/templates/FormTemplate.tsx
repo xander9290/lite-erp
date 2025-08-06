@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, lazy } from "react";
 
 import {
+  Alert,
   Button,
   Col,
   Dropdown,
@@ -34,6 +35,7 @@ type FormViewTemplateProps = {
   notCreate?: boolean;
   withActivity?: boolean;
   entityName: string;
+  active?: boolean;
 };
 
 type TFormActions = {
@@ -63,6 +65,7 @@ function FormTemplate({
   notCreate,
   withActivity,
   entityName,
+  active,
 }: FormViewTemplateProps) {
   const searchParams = useSearchParams();
   const model_id = searchParams.get("id");
@@ -187,6 +190,11 @@ function FormTemplate({
             className="card-body  flex-fill overflow-auto"
             disabled={disableForm}
           >
+            {active === true ? null : (
+              <Alert variant="warning" className="py-1">
+                <p className="fs-2 my-1 text-center">INACTIVO</p>
+              </Alert>
+            )}
             <div className="d-flex justify-content-between align-items-end mb-2">
               <h2 className="card-title fw-bolder">{name ?? "nuevo"}</h2>
               {/* STATEBAR - Desktop */}

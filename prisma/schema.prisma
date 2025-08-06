@@ -28,6 +28,7 @@ model Partner {
     // campos de modelo 
     state       String?
     displayType String  @default("internal") @map("display_type")
+    active      Boolean @default(true)
 
     relatedUser User? @relation("RelatedUser")
 
@@ -53,6 +54,7 @@ model User {
     password    String
     name        String? @unique
     displayName String  @unique @map("display_name")
+    active      Boolean @default(true)
 
     // modelos creados
     createdPartners Partner[] @relation("CreateUidPartners")
@@ -84,6 +86,8 @@ model Group {
     id          String @id @default(cuid())
     name        String @unique
     displayName String @unique @map("display_name")
+
+    active Boolean @default(true)
 
     users User[] @relation("RelatedGroup")
 
