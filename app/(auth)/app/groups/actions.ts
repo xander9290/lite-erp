@@ -1,6 +1,7 @@
 "use server";
 
 import { Group, GroupLine, User } from "@/generate/prisma";
+import { auth } from "@/libs/auth";
 import { db } from "@/libs/core/db/ExtendedPrisma";
 import { ActionResponse } from "@/libs/definitions";
 import { prisma } from "@/libs/prisma";
@@ -101,10 +102,14 @@ export async function createGroup({
   userIds: User[];
 }): Promise<ActionResponse<string>> {
   try {
+    const session = await auth();
     const newGroup = await prisma.group.create({
       data: {
         name,
         displayName: name,
+        createBy: {
+          connect: { id: session?.user.id },
+        },
         users: {
           connect: userIds.map((user) => ({ id: user.id })),
         },
