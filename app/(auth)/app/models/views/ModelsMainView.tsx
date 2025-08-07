@@ -1,31 +1,31 @@
-"use client";
 import NotFound from "@/app/not-found";
-import { fetchModels, ModelsWithAttrs } from "../actions";
+import { fetchModels } from "../actions";
 import ModelsListView from "./ModelsListView";
-import { useAppLayout } from "@/contexts/LayoutContext";
-import { useEffect, useState } from "react";
 
-function ModelsMainView() {
-  const { skip, search, filter, viewMode } = useAppLayout();
+async function ModelsMainView({
+  viewMode,
+  page,
+  search = "",
+  filter = "displayName",
+  id,
+}: {
+  viewMode: string;
+  page: number;
+  search: string;
+  filter: string;
+  id: string | null;
+}) {
   const perPage = 50;
+  const skip = page || 1;
 
-  const [models, setModels] = useState<ModelsWithAttrs[]>([]);
-  console.log(search);
+  const resModel = await fetchModels({
+    filter: filter || "name",
+    perPage,
+    search: search || "",
+    skip,
+  });
 
-  useEffect(() => {
-    const handleFetchModels = async () => {
-      const res = await fetchModels({
-        filter: filter || "name",
-        perPage,
-        search: search || "",
-        skip,
-      });
-
-      setModels(res.data || []);
-    };
-
-    handleFetchModels();
-  }, []);
+  const models = resModel.data || [];
 
   if (viewMode === "list") {
     return (

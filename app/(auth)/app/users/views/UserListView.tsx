@@ -8,8 +8,7 @@ import TableTemplate, {
 import { UserWithPartner } from "@/libs/definitions";
 import { formatDate } from "@/libs/helpers";
 import ImageAvatar from "@/ui/ImageAvatar";
-import Link from "next/link";
-import { Badge, Dropdown, DropdownButton } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 
 function UserListView({
   page,
