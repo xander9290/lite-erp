@@ -153,6 +153,7 @@ model Activity {
 model Model {
     id          String  @id @default(cuid())
     name        String  @unique
+    label       String
     displayName String  @unique @map("display_name")
     active      Boolean @default(true)
 

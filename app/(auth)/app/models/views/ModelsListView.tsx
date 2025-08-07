@@ -2,6 +2,7 @@
 
 import ListTemplate from "@/components/templates/ListTemplate";
 import { ModelsWithAttrs } from "../actions";
+import ModelsKanbanView from "./ModelsKanbanView";
 
 function ModelsListView({
   page,
@@ -23,9 +24,9 @@ function ModelsListView({
       title="Modelos"
       viewForm="/app/models?view_mode=form&id=null"
       basePath="/app/models?view_mode=list&page=1"
-      filterSearch={[{ key: "name", value: "Nombre" }]}
+      filterSearch={[{ key: "displayName", value: "Nombre" }]}
     >
-      <h2>Alguna vista:{page}</h2>
+      <ModelsKanbanView models={models} />
     </ListTemplate>
   );
 }

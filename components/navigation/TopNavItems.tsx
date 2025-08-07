@@ -22,7 +22,7 @@ function TopNavItems() {
       <NavDropdown
         title={
           <>
-            <i className="bi bi-cart-plus me-1"></i>
+            <i className="bi bi-cart-plus-fill me-1"></i>
             <span>Compras</span>
           </>
         }
@@ -34,13 +34,13 @@ function TopNavItems() {
       <NavDropdown
         title={
           <>
-            <i className="bi bi-file-earmark-text me-1"></i>
+            <i className="bi bi-file-earmark-text-fill me-1"></i>
             <span>Facturación</span>
           </>
         }
       >
         <NavDropdown.Item>
-          <i className="bi bi-person-vcard me-1"></i>
+          <i className="bi bi-person-vcard-fill me-1"></i>
           <span>Clietes</span>
         </NavDropdown.Item>
         <NavDropdown.Item>
@@ -53,13 +53,13 @@ function TopNavItems() {
       <NavDropdown
         title={
           <>
-            <i className="bi bi-journal-bookmark me-1"></i>
+            <i className="bi bi-journal-bookmark-fill me-1"></i>
             <span>Contactos</span>
           </>
         }
       >
         <NavDropdown.Item>
-          <i className="bi bi-person-vcard me-1"></i>
+          <i className="bi bi-person-vcard-fill me-1"></i>
           <span>Clietes</span>
         </NavDropdown.Item>
         <NavDropdown.Item>
@@ -86,7 +86,7 @@ function TopNavItems() {
           <span>Productos</span>
         </NavDropdown.Item>
         <NavDropdown.Item>
-          <i className="bi bi-grid-1x2 me-1"></i>
+          <i className="bi bi-grid-1x2-fill me-1"></i>
           <span>Almacenes</span>
         </NavDropdown.Item>
         <NavDropdown.Item>
@@ -99,21 +99,21 @@ function TopNavItems() {
       <NavDropdown
         title={
           <>
-            <i className="bi bi-gear me-1"></i>
+            <i className="bi bi-gear-fill me-1"></i>
             <span>Ajustes</span>
           </>
         }
       >
         <NavDropdown.Item as={Link} href={`/app/users?view_mode=list&page=1`}>
-          <i className="bi bi-person me-1"></i>
+          <i className="bi bi-person-fill me-1"></i>
           <span>Usuarios</span>
         </NavDropdown.Item>
         <NavDropdown.Item as={Link} href={`/app/groups?view_mode=list&page=1`}>
-          <i className="bi bi-people me-1"></i>
+          <i className="bi bi-people-fill me-1"></i>
           <span>Grupos</span>
         </NavDropdown.Item>
         <NavDropdown.Item as={Link} href={`/app/models?view_mode=list&page=1`}>
-          <i className="bi bi-database me-1"></i>
+          <i className="bi bi-database-fill me-1"></i>
           <span>Modelos</span>
         </NavDropdown.Item>
       </NavDropdown>

@@ -30,7 +30,7 @@ function UserListView({
       viewForm="/app/users?view_mode=form&id=null"
       basePath="/app/users?view_mode=list&page=1"
       filterSearch={[
-        { key: "nombre", value: "Nombre" },
+        { key: "displayName", value: "Nombre" },
         { key: "partner.name", value: "Contacto" },
         { key: "group.name", value: "Grupo" },
       ]}
