@@ -101,6 +101,7 @@ function FormTemplate({
             <div className="d-flex align-items-center gap-2">
               {model_id === "null" ? null : (
                 <Button
+                  variant="primary"
                   className="fw-bold"
                   onClick={() => router.replace(viewForm)}
                   style={{ display: notCreate ? "none" : "inline-block" }}
@@ -135,7 +136,7 @@ function FormTemplate({
               <div className="d-none d-md-flex gap-2">
                 {formActions?.map((action, i) => (
                   <Button
-                    variant="warning"
+                    variant="primary"
                     key={`form-action-${i}-${action.string}`}
                     onClick={() =>
                       handleActionForm(action.action, action.confirm)
@@ -155,7 +156,7 @@ function FormTemplate({
               {formActions && (
                 <div className="d-flex d-md-none">
                   <DropdownButton
-                    variant="warning"
+                    variant="primary"
                     title="Acciones"
                     align="end"
                   >
@@ -180,7 +181,7 @@ function FormTemplate({
             </div>
             <Button
               onClick={() => router.back()}
-              variant="info"
+              variant="primary"
               title="Regresar"
             >
               <i className="bi bi-arrow-left"></i>

@@ -100,7 +100,7 @@ export async function createGroup({
 }: {
   name: string;
   userIds: User[];
-}): Promise<ActionResponse<string>> {
+}): Promise<ActionResponse<GroupWithAttrs>> {
   try {
     const session = await auth();
     const newGroup = await prisma.group.create({
@@ -114,12 +114,17 @@ export async function createGroup({
           connect: userIds.map((user) => ({ id: user.id })),
         },
       },
+      include: {
+        users: true,
+        createBy: true,
+        groupLines: true,
+      },
     });
 
     return {
       success: true,
       message: "Se ha creado el grupo",
-      data: newGroup.id,
+      data: newGroup,
     };
   } catch (error: unknown) {
     return {

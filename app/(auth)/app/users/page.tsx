@@ -1,24 +1,9 @@
-import LoadingPage from "@/app/LoadingPage";
-import { Suspense, lazy } from "react";
+import { lazy } from "react";
+
 const UsersMainView = lazy(() => import("./views/UsersMainView"));
 
-async function PageUsers({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string }>;
-}) {
-  const { view_mode: viewMode, page, search, filter, id } = await searchParams;
-  return (
-    <Suspense fallback={<LoadingPage />}>
-      <UsersMainView
-        viewMode={viewMode}
-        page={page}
-        search={search}
-        filter={filter}
-        id={id}
-      />
-    </Suspense>
-  );
+async function PageUsers() {
+  return <UsersMainView />;
 }
 
 export default PageUsers;

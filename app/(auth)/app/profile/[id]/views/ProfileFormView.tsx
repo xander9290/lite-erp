@@ -116,6 +116,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
           },
         ]}
         withActivity={false}
+        active={user.active ?? true}
       >
         <ViewGroup>
           <Form.Group className="text-center mb-3">

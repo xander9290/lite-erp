@@ -149,3 +149,40 @@ model Activity {
 
     @@map("activity")
 }
+
+model Model {
+    id          String  @id @default(cuid())
+    name        String  @unique
+    displayName String  @unique @map("display_name")
+    active      Boolean @default(true)
+
+    notCreate Boolean @default(false) @map("not_create")
+    notEdit   Boolean @default(false) @map("not_edit")
+
+    fieldLines ModelFieldLine[] @relation("RelatedModel")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([name, displayName])
+    @@map("models")
+}
+
+model ModelFieldLine {
+    id          String  @id @default(cuid())
+    name        String  @unique
+    displayName String  @unique @map("display_name")
+    active      Boolean @default(true)
+
+    readonly  Boolean @default(false)
+    invisible Boolean @default(false)
+
+    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id])
+    modelId String? @map("model_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([name, displayName])
+    @@map("model_field_line")
+}

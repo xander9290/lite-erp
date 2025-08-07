@@ -67,13 +67,19 @@ function GroupFormView({
         return;
       }
 
+      // reset({
+      //   name: res.data?.name,
+      //   active: res.data?.active,
+      //   userIds: res.data?.users,
+      // });
+
       await createActivity({
         entityId: session?.user.id,
         entityName: "groups",
         string: `Ha creado el grupo ${data.name}`,
       });
 
-      router.replace(`/app/groups?view_mode=form&id=${res.data}`);
+      router.replace(`/app/groups?view_mode=form&id=${res.data?.id}`);
     } else {
       const newData = {
         name: data.name,
@@ -165,7 +171,7 @@ function GroupFormView({
       withActivity={true}
       onSubmit={handleSubmit(onSubmit)}
       name={group?.name || ""}
-      active={group?.active}
+      active={group?.active ?? true}
     >
       <ViewGroup>
         <Form.Group controlId="GroupName" className="mb-3">
@@ -186,9 +192,12 @@ function GroupFormView({
           <Form.Check {...register("active")} label="Activo" id="Activo" />
         </Form.Group>
       </ViewGroup>
-      <FormBook dKey="lines">
-        <FormPage title="Accesos" eventKey="lines">
+      <FormBook dKey="models">
+        <FormPage title="Modelos" eventKey="models">
           <h6>Accesos</h6>
+        </FormPage>
+        <FormPage title="Campos" eventKey="fields">
+          <h5>Campos de modelo</h5>
         </FormPage>
         <FormPage
           title={`Usuarios (${group?.users.length ?? 0})`}

@@ -74,7 +74,7 @@ function ModalChangeUserPassword({ show, onHide, modelId }: TModalProps) {
       backdrop="static"
     >
       <Modal.Header closeButton>
-        <Modal.Title>Restablecer contraseña</Modal.Title>
+        <Modal.Title className="fs-5">Restablecer contraseña</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form
