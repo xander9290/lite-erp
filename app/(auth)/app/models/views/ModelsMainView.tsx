@@ -1,6 +1,7 @@
-import NotFound from "@/app/not-found";
-import { fetchModels } from "../actions";
 import ModelsListView from "./ModelsListView";
+import ModelsFormView from "./ModelsFormView";
+import { readModel, readModels } from "../actions";
+import NotFound from "@/app/not-found";
 
 async function ModelsMainView({
   viewMode,
@@ -18,14 +19,18 @@ async function ModelsMainView({
   const perPage = 50;
   const skip = page || 1;
 
-  const resModel = await fetchModels({
+  const resModels = await readModels({
     filter: filter || "name",
     perPage,
     search: search || "",
     skip,
   });
 
-  const models = resModel.data || [];
+  const models = resModels.data || [];
+
+  const resModel = await readModel({ id });
+
+  const model = resModel.data || null;
 
   if (viewMode === "list") {
     return (
@@ -38,7 +43,7 @@ async function ModelsMainView({
       />
     );
   } else if (viewMode === "form") {
-    return <h2>Form</h2>;
+    return <ModelsFormView modelId={id} model={model} />;
   } else {
     return <NotFound />;
   }

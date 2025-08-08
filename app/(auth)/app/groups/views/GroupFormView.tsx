@@ -67,12 +67,6 @@ function GroupFormView({
         return;
       }
 
-      // reset({
-      //   name: res.data?.name,
-      //   active: res.data?.active,
-      //   userIds: res.data?.users,
-      // });
-
       await createActivity({
         entityId: session?.user.id,
         entityName: "groups",
