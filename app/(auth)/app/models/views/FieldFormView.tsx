@@ -24,7 +24,7 @@ function FieldFormView({
 }) {
   const {
     register,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
     handleSubmit,
     reset,
     setFocus,

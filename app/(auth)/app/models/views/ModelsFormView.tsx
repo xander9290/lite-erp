@@ -37,8 +37,6 @@ function ModelsFormView({
     handleSubmit,
     reset,
     watch,
-    setValue,
-    getValues,
   } = useForm<TInputs>();
 
   const [fields] = watch(["fieldLines"]);
