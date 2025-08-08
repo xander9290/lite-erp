@@ -15,9 +15,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { createActivity } from "@/app/actions/user-actions";
 import ModelsFieldList from "./ModelsFieldList";
-import ModelsFormCreateField, {
-  TInputsModelsFields,
-} from "./ModelsFormCreateField";
 
 type TInputs = {
   name: string;
@@ -63,12 +60,6 @@ function ModelsFormView({
       router.replace(`/app/models?view_mode=form&id=${res.data}`);
     } else {
     }
-  };
-
-  const handleGetValues = (data: TInputsModelsFields) => {
-    const newFields = [...fields, data];
-    console.log(newFields);
-    setValue("fieldLines", newFields, { shouldDirty: true });
   };
 
   const handelRevert = () => {};
@@ -130,7 +121,6 @@ function ModelsFormView({
       <ViewGroupFluid>
         <FormBook dKey="Campos">
           <FormPage title="Campos" eventKey="fields">
-            <ModelsFormCreateField getValues={handleGetValues} />
             <ModelsFieldList fieldLines={fields || []} />
           </FormPage>
         </FormBook>
