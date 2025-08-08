@@ -104,9 +104,20 @@ model Group {
 }
 
 model GroupLine {
-    id          String @id @default(cuid())
-    name        String @unique
-    displayName String @unique @map("display_name")
+    id String @id @default(cuid())
+
+    pageKey    String? @map("page_key")
+    buttonName String? @map("button_name")
+    menuName   String? @map("menu_name")
+
+    entityName String? @map("entity_name")
+    fieldName  String? @map("field_name")
+
+    invisible Boolean @default(false)
+    required  Boolean @default(false)
+    readonly  Boolean @default(false)
+    notCreate Boolean @default(false)
+    noEdit    Boolean @default(false)
 
     groupId String? @map("group_id")
     Group   Group?  @relation("GroupLines", fields: [groupId], references: [id], onDelete: Cascade)
@@ -116,7 +127,6 @@ model GroupLine {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@index([name, displayName])
     @@map("group_line")
 }
 
