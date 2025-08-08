@@ -187,7 +187,7 @@ export function Many2one<T extends Many2OneOption>({
                 onMouseDown={() => handleSelect(option)}
                 active={index === highlightedIndex}
               >
-                {option.name}
+                {option.displayName}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>

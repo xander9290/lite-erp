@@ -109,7 +109,7 @@ model GroupLine {
     displayName String @unique @map("display_name")
 
     groupId String? @map("group_id")
-    Group   Group?  @relation("GroupLines", fields: [groupId], references: [id])
+    Group   Group?  @relation("GroupLines", fields: [groupId], references: [id], onDelete: Cascade)
 
     createUid String? @map("create_uid")
 
@@ -167,13 +167,14 @@ model Model {
 }
 
 model ModelFieldLine {
-    id       String  @id @default(cuid())
-    name     String
-    active   Boolean @default(true)
-    type     String
-    required Boolean @default(false)
+    id          String  @id @default(cuid())
+    name        String
+    label       String
+    displayName String
+    type        String
+    required    Boolean @default(false)
 
-    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id])
+    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id], onDelete: Cascade)
     modelId String? @map("model_id")
 
     createdAt DateTime @default(now()) @map("created_at")

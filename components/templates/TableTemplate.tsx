@@ -84,6 +84,16 @@ export function ListItem({
   className?: string;
   name: string;
 }) {
+  if (name === "#") {
+    return (
+      <th
+        title={name}
+        className={`text-nowrap ${className} border-end text-end`}
+      >
+        {children}
+      </th>
+    );
+  }
   return (
     <td valign="middle" title={name} className={`text-nowrap ${className}`}>
       {children}

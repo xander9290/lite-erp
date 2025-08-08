@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { createActivity } from "@/app/actions/user-actions";
 import ModelsFieldList from "./ModelsFieldList";
+import FieldFormView from "./FieldFormView";
 
 type TInputs = {
   name: string;
@@ -63,6 +64,12 @@ function ModelsFormView({
   };
 
   const handelRevert = () => {};
+
+  const handleGetNewValue = (data: ModelFieldLine | undefined) => {
+    if (!data) return;
+    const newValues = [...fields, data];
+    reset({ fieldLines: newValues });
+  };
 
   useEffect(() => {
     if (model) {
@@ -121,7 +128,11 @@ function ModelsFormView({
       <ViewGroupFluid>
         <FormBook dKey="Campos">
           <FormPage title="Campos" eventKey="fields">
-            <ModelsFieldList fieldLines={fields || []} />
+            <FieldFormView getNewValue={handleGetNewValue} modelId={modelId} />
+            <ModelsFieldList
+              fieldLines={fields || []}
+              path={`/app/models?view_mode=form&id=${modelId}`}
+            />
           </FormPage>
         </FormBook>
       </ViewGroupFluid>
