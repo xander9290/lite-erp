@@ -14,7 +14,7 @@ function KanbanContainer({
     <Col xs="12" sm="6" md="6" lg="4" xl="3" xxl="3">
       <Link
         href={formView}
-        className="card text-decoration-none btn btn-light btn-sm rounded"
+        className="card text-decoration-none btn btn-light btn-sm rounded shadow"
       >
         <div className="card-body p-2">{children}</div>
       </Link>
