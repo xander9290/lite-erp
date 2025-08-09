@@ -55,7 +55,9 @@ function ModelsFieldList({
             <ListItem name="label">{field.label}</ListItem>
             <ListItem name="displayName">{field.displayName}</ListItem>
             <ListItem name="type">{field.type}</ListItem>
-            <ListItem name="required">{field.required ? "Sí" : "No"}</ListItem>
+            <ListItem name="required" className="text-center">
+              {field.required ? "Sí" : "No"}
+            </ListItem>
             <ListItem name="edit" className="text-center">
               <Button
                 size="sm"
