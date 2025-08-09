@@ -104,19 +104,29 @@ model Group {
 }
 
 model GroupLine {
-    id          String @id @default(cuid())
-    name        String @unique
-    displayName String @unique @map("display_name")
+    id String @id @default(cuid())
+
+    pageKey    String? @map("page_key")
+    buttonName String? @map("button_name")
+    menuName   String? @map("menu_name")
+
+    entityName String? @map("entity_name")
+    fieldName  String? @map("field_name")
+
+    invisible Boolean @default(false)
+    required  Boolean @default(false)
+    readonly  Boolean @default(false)
+    notCreate Boolean @default(false)
+    noEdit    Boolean @default(false)
 
     groupId String? @map("group_id")
-    Group   Group?  @relation("GroupLines", fields: [groupId], references: [id])
+    Group   Group?  @relation("GroupLines", fields: [groupId], references: [id], onDelete: Cascade)
 
     createUid String? @map("create_uid")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@index([name, displayName])
     @@map("group_line")
 }
 
@@ -167,13 +177,14 @@ model Model {
 }
 
 model ModelFieldLine {
-    id       String  @id @default(cuid())
-    name     String
-    active   Boolean @default(true)
-    type     String
-    required Boolean @default(false)
+    id          String  @id @default(cuid())
+    name        String
+    label       String
+    displayName String
+    type        String
+    required    Boolean @default(false)
 
-    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id])
+    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id], onDelete: Cascade)
     modelId String? @map("model_id")
 
     createdAt DateTime @default(now()) @map("created_at")
