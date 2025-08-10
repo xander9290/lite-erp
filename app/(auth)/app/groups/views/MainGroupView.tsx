@@ -3,6 +3,7 @@ import { fetchGroups, fetchGroup } from "../actions";
 import GroupFormView from "./GroupFormView";
 import GroupListView from "./GroupListView";
 import { userMany2one } from "../../users/actions";
+import { db } from "@/libs/core/db/ExtendedPrisma";
 
 async function MainGroupView({
   viewMode,
@@ -19,18 +20,17 @@ async function MainGroupView({
 }) {
   const skip: number = parseInt(page) || 1;
   const perPage = 50;
-  // HACE FETCH DE GRUPOS
-  const res = await fetchGroups({
-    filter,
-    search,
-    skip,
-    perPage: 10,
-  });
 
-  if (!res.success) {
-    return <div>Error al cargar grupos: {res.message}</div>;
-  }
-  const groups = res.data || [];
+  const [groups, total] = await Promise.all([
+    await fetchGroups({
+      filter,
+      search,
+      skip,
+      perPage: 10,
+    }),
+
+    await db.find("group", ["or", [filter, "ilike", search]]),
+  ]);
 
   // Si se proporciona un ID, busca el grupo específico
   let group = null;
@@ -51,8 +51,8 @@ async function MainGroupView({
       <GroupListView
         page={skip}
         perPage={perPage}
-        total={groups.length}
-        groups={groups}
+        total={total.length}
+        groups={groups.data || []}
         filter={filter}
       />
     );

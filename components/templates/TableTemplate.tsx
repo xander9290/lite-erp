@@ -11,7 +11,7 @@ function TableTemplate({
   className?: string;
 }) {
   return (
-    <Table bordered size="sm" className={className} hover>
+    <Table striped size="sm" className={className} hover>
       {children}
     </Table>
   );
@@ -43,7 +43,7 @@ function ListViewColumn({
   return (
     <th
       title={name}
-      className={`text-capitalize text-nowrap ${className} fw-bold`}
+      className={`text-capitalize border-end text-nowrap ${className} fw-bold`}
     >
       {children}
     </th>
