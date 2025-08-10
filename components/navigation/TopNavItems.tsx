@@ -116,6 +116,10 @@ function TopNavItems() {
           <i className="bi bi-database-fill me-1"></i>
           <span>Modelos</span>
         </NavDropdown.Item>
+        <NavDropdown.Item as={Link} href={`/app/fields?view_mode=list&page=1`}>
+          <i className="bi bi-list-columns-reverse me-1"></i>{" "}
+          <span>Campos</span>
+        </NavDropdown.Item>
       </NavDropdown>
     </Nav>
   );

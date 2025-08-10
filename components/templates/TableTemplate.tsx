@@ -11,7 +11,7 @@ function TableTemplate({
   className?: string;
 }) {
   return (
-    <Table size="sm" className={className} hover>
+    <Table striped size="sm" className={className} hover>
       {children}
     </Table>
   );
@@ -43,7 +43,7 @@ function ListViewColumn({
   return (
     <th
       title={name}
-      className={`text-capitalize text-nowrap ${className} fw-bold`}
+      className={`text-capitalize border-end text-nowrap ${className} fw-bold`}
     >
       {children}
     </th>
@@ -88,17 +88,18 @@ export function ListItem({
     return (
       <th
         title={name}
-        className={`text-nowrap ${className} border-end text-end`}
+        className={`text-truncate ${className} border-end text-end`}
       >
         {children}
       </th>
     );
+  } else {
+    return (
+      <td valign="middle" title={name} className={`text-nowrap ${className}`}>
+        {children}
+      </td>
+    );
   }
-  return (
-    <td valign="middle" title={name} className={`text-nowrap ${className}`}>
-      {children}
-    </td>
-  );
 }
 
 TableTemplate.Header = ListViewHeader;

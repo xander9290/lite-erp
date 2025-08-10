@@ -13,7 +13,10 @@ function GroupKanbanView({ groups }: { groups: GroupWithAttrs[] | null }) {
             key={group.id}
             formView={`/app/groups?view_mode=form&id=${group.id}`}
           >
-            <div className="d-flex justify-content-between align-items-center">
+            <div
+              style={{ minHeight: "60px" }}
+              className="d-flex justify-content-between align-items-start"
+            >
               <h5 className="card-title fw-bold">{group.name}</h5>
               {!group.active && <Badge bg="danger">Inactivo</Badge>}
               <h6>
@@ -21,7 +24,7 @@ function GroupKanbanView({ groups }: { groups: GroupWithAttrs[] | null }) {
                 {group.users.length}
               </h6>
             </div>
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex justify-content-between align-items-end">
               <p className="card-text mb-0">
                 <strong>Creado por: </strong>
                 {group.createBy ? group.createBy.name : "Desconocido"}

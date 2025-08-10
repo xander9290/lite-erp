@@ -2,6 +2,7 @@ import ModelsListView from "./ModelsListView";
 import ModelsFormView from "./ModelsFormView";
 import { readModel, readModels } from "../actions";
 import NotFound from "@/app/not-found";
+import { db } from "@/libs/core/db/ExtendedPrisma";
 
 async function ModelsMainView({
   viewMode,
@@ -19,14 +20,18 @@ async function ModelsMainView({
   const perPage = 50;
   const skip = page || 1;
 
-  const resModels = await readModels({
-    filter: filter || "name",
-    perPage,
-    search: search || "",
-    skip,
-  });
+  const [models, total] = await Promise.all([
+    await readModels({
+      filter: filter || "name",
+      perPage,
+      search: search || "",
+      skip,
+    }),
 
-  const models = resModels.data || [];
+    await db.find("model", ["or", [filter, "ilike", search]]),
+  ]);
+
+  // const models = resModels.data || [];
 
   const resModel = await readModel({ id });
 
@@ -38,8 +43,8 @@ async function ModelsMainView({
         filter={filter || ""}
         page={skip}
         perPage={perPage}
-        total={models.length}
-        models={models}
+        total={total.length}
+        models={models.data || []}
       />
     );
   } else if (viewMode === "form") {

@@ -7,7 +7,7 @@ import { Card, Col, Row } from "react-bootstrap";
 
 type ListViewTemplateProps = {
   children: React.ReactNode;
-  viewForm: string;
+  viewForm?: string;
   title: string;
   basePath: string;
   page: number;
@@ -18,7 +18,7 @@ type ListViewTemplateProps = {
 
 function ListTemplate({
   children,
-  viewForm,
+  viewForm = "",
   title,
   basePath,
   page = 1,
@@ -32,9 +32,11 @@ function ListTemplate({
         <Row className="g-2 align-items-end">
           <Col xs="12" md="3">
             <div className="d-flex align-items-center gap-2">
-              <Link className="btn btn-primary btn-sm" href={viewForm}>
-                Nuevo
-              </Link>
+              {viewForm && (
+                <Link className="btn btn-primary btn-sm" href={viewForm}>
+                  Nuevo
+                </Link>
+              )}
               <Card.Title className="mb-0 text-capitalize">{title}</Card.Title>
             </div>
           </Col>

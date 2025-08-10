@@ -64,7 +64,7 @@ function UserListView({
                 </div>
               </ListItem>
               <ListItem name="login">{user.login}</ListItem>
-              <ListItem name="active">
+              <ListItem name="active" className="text-center">
                 {user.active ? (
                   <Badge bg="success">Activo</Badge>
                 ) : (

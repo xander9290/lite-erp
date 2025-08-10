@@ -21,14 +21,19 @@ async function UsersMainView({
   const perPage = 50;
   const skip = page || 1;
 
-  const resUsers = await fetchUsers({
-    skip,
-    search: search || "",
-    perPage,
-    filter: filter || "name",
-  });
+  // const users = resUsers.data || [];
 
-  const users = resUsers.data || [];
+  const [users, total] = await Promise.all([
+    await fetchUsers({
+      skip,
+      search: search || "",
+      perPage,
+      filter: filter || "name",
+    }),
+    await db.find("user", ["or", [filter, "ilike", search]]),
+  ]);
+
+  console.log(users);
 
   const resUser = await fetchUser({ id });
   const user = resUser.data || null;
@@ -43,10 +48,10 @@ async function UsersMainView({
   if (viewMode === "list") {
     return (
       <UserListView
-        users={users}
+        users={users.data}
         page={skip}
         perPage={perPage}
-        total={users.length}
+        total={total.length}
       />
     );
   } else if (viewMode === "form") {

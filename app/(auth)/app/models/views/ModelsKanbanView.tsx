@@ -13,10 +13,12 @@ function ModelsKanbanView({ models }: { models: ModelsWithAttrs[] | null }) {
             key={model.id}
             formView={`/app/models?view_mode=form&id=${model.id}`}
           >
-            <div className="d-flex justify-content-between align-items-center">
-              <h5 className="card-title fw-bold">{model.displayName}</h5>
+            <div style={{ minHeight: "80px" }}>
+              <h5 className="card-title fw-bold text-start">
+                {model.displayName}
+              </h5>
               {!model.active && <Badge bg="danger">Inactivo</Badge>}
-              <p className="card-text">
+              <p className="card-text text-end">
                 Campos: {model.fieldLines.length || 0}
               </p>
             </div>
