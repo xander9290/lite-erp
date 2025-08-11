@@ -44,6 +44,7 @@ type TFormActions = {
   confirm?: string;
   invisible?: boolean;
   disable?: boolean;
+  name: string;
 };
 
 export type TFormState = {
@@ -146,6 +147,7 @@ function FormTemplate({
                       display: action.invisible ? "none" : "inline-block",
                     }}
                     disabled={action.disable}
+                    title={action.name}
                   >
                     {action.string}
                   </Button>
@@ -171,6 +173,7 @@ function FormTemplate({
                             handleActionForm(action.action, action.confirm)
                           }
                           disabled={action.disable}
+                          title={action.name}
                         >
                           {action.string}
                         </Dropdown.Item>

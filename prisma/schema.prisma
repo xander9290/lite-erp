@@ -106,16 +106,13 @@ model Group {
 model GroupLine {
     id String @id @default(cuid())
 
-    pageKey    String? @map("page_key")
-    buttonName String? @map("button_name")
-    menuName   String? @map("menu_name")
-
     entityName String? @map("entity_name")
     fieldName  String? @map("field_name")
 
     invisible Boolean @default(false)
     required  Boolean @default(false)
     readonly  Boolean @default(false)
+
     notCreate Boolean @default(false)
     noEdit    Boolean @default(false)
 

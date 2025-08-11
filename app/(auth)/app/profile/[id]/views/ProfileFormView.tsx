@@ -113,6 +113,7 @@ function ProfileFormView({ user }: { user: UserWithPartner }) {
           {
             string: "Cambiar contraseña",
             action: handleChangePassword,
+            name: "changePassword",
           },
         ]}
         withActivity={false}

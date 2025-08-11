@@ -124,13 +124,13 @@ function ModelsFormView({
         </Form.Group>
       </ViewGroup>
       <ViewGroupFluid>
-        <FormBook dKey="Campos">
-          <FormPage title="Campos" eventKey="fields">
-            <FieldFormView getNewValue={handleGetNewValue} modelId={modelId} />
+        <FormBook dKey="fieldsPage">
+          <FormPage title="Campos" eventKey="fieldsPage">
             <ModelsFieldList
               fieldLines={fields || []}
               path={`/app/models?view_mode=form&id=${modelId}`}
-            />
+              />
+              <FieldFormView getNewValue={handleGetNewValue} modelId={modelId} />
           </FormPage>
         </FormBook>
       </ViewGroupFluid>

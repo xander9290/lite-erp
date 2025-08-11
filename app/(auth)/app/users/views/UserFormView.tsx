@@ -141,6 +141,7 @@ function UserFormView({
             string: "Restablecer contraseña",
             action: () => handleChangePassword(),
             disable: user?.active === false,
+            name: "resetPassword",
           },
         ]}
         active={user?.active}

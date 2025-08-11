@@ -6,7 +6,6 @@ import TableTemplate, {
   ListItemLink,
 } from "@/components/templates/TableTemplate";
 import { Model, ModelFieldLine } from "@/generate/prisma";
-import { Button } from "react-bootstrap";
 
 export interface FieldsWithAttrs extends ModelFieldLine {
   model: Model | null;
@@ -35,6 +34,7 @@ function FieldsListView({
         { key: "displayName", value: "Nombre" },
         { key: "label", value: "Etiqueta" },
         { key: "model.displayName", value: "Modelo" },
+        { key: "type", value: "Tipo" },
       ]}
     >
       <TableTemplate>

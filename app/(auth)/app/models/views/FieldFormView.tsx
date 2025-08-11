@@ -7,6 +7,7 @@ import { ModelFieldLine } from "@/generate/prisma";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import TableTemplate from "@/components/templates/TableTemplate";
 
 type TInputs = {
   name: string;
@@ -96,45 +97,55 @@ function FieldFormView({
   }, [isSubmitting]);
 
   return (
-    <fieldset disabled={isSubmitting}>
-      <Form.Group
-        controlId="FieldName"
-        className="d-flex align-items-center flex-sm-nowrap flex-wrap gap-2 py-2"
-      >
-        <Form.Control
-          {...register("name", { required: true })}
-          size="sm"
-          placeholder="Nombre"
-          autoComplete="off"
-          isInvalid={!!errors.name}
-        />
-        <Form.Control
-          {...register("label", { required: true })}
-          size="sm"
-          placeholder="Etiqueta"
-          autoComplete="off"
-          isInvalid={!!errors.label}
-        />
-        <Form.Select size="sm" {...register("type", { required: true })}>
-          <option value="">Tipo</option>
-          <option value="text">Texto</option>
-          <option value="number">Número</option>
-          <option value="email">Correo</option>
-          <option value="boolean">Booleano</option>
-          <option value="date">Fecha</option>
-          <option value="lines">Línea</option>
-          <option value="related">Relación</option>
-        </Form.Select>
-        <Form.Check
-          {...register("required")}
-          label="Requerido"
-          id="Requerido"
-        />
-        <Button type="button" size="sm" onClick={handleSubmit(onSubmit)}>
-          <i className="bi bi-plus-circle"></i>
-        </Button>
-      </Form.Group>
-    </fieldset>
+    <TableTemplate>
+      <TableTemplate.Header>
+        <TableTemplate.Column name="name">
+          <Form.Control
+            {...register("name", { required: true })}
+            size="sm"
+            placeholder="Nombre"
+            autoComplete="off"
+            isInvalid={!!errors.name}
+          />
+        </TableTemplate.Column>
+        <TableTemplate.Column name="label">
+          <Form.Control
+            {...register("label", { required: true })}
+            size="sm"
+            placeholder="Etiqueta"
+            autoComplete="off"
+            isInvalid={!!errors.label}
+          />
+        </TableTemplate.Column>
+        <TableTemplate.Column name="type">
+          <Form.Select size="sm" {...register("type", { required: true })}>
+            <option value="">Tipo</option>
+            <option value="text">Texto</option>
+            <option value="number">Número</option>
+            <option value="email">Correo</option>
+            <option value="boolean">Booleano</option>
+            <option value="date">Fecha</option>
+            <option value="lines">Línea</option>
+            <option value="related">Relación</option>
+            <option value="page">Página</option>
+            <option value="actionButton">Acción</option>
+            <option value="menu">Menú</option>
+          </Form.Select>
+        </TableTemplate.Column>
+        <TableTemplate.Column name="required">
+          <Form.Check
+            {...register("required")}
+            label="Requerido"
+            id="Requerido"
+          />
+        </TableTemplate.Column>
+        <TableTemplate.Column name="btnSubmit">
+          <Button type="button" size="sm" onClick={handleSubmit(onSubmit)}>
+            <i className="bi bi-plus-circle"></i>
+          </Button>
+        </TableTemplate.Column>
+      </TableTemplate.Header>
+    </TableTemplate>
   );
 }
 

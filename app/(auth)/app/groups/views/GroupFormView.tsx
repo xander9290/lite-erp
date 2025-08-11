@@ -13,20 +13,24 @@ import {
   removeUser,
   updateGroup,
 } from "../actions";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import GroupListUsers from "./GroupListUsers";
 import { Many2one } from "@/ui/Many2one";
 import toast from "react-hot-toast";
-import { User } from "@/generate/prisma";
+import { GroupLine, Model, User } from "@/generate/prisma";
 import { useRouter } from "next/navigation";
 import { createActivity } from "@/app/actions/user-actions";
 import { useSession } from "next-auth/react";
+import GroupAccesModelsForm from "./GroupAccesModelsForm";
+import { getModelsMany2one } from "../../models/actions";
+import GroupAccessList from "./GroupAccessList";
 
 type TInputs = {
   name: string;
   userId: User | null;
   userIds: User[];
   active: boolean;
+  groupLine: GroupLine[];
 };
 
 function GroupFormView({
@@ -48,10 +52,12 @@ function GroupFormView({
     watch,
   } = useForm<TInputs>();
 
-  const [userId, userIds] = watch(["userId", "userIds"]);
+  const [userId, userIds, lines] = watch(["userId", "userIds", "groupLine"]);
 
   const originalValuesRef = useRef<TInputs | null>(null);
   const router = useRouter();
+
+  const [modelsMany2one, setModelsMany2one] = useState<Model[]>([]);
 
   const onSubmit: SubmitHandler<TInputs> = async (data) => {
     if (modelId && modelId === "null") {
@@ -137,6 +143,12 @@ function GroupFormView({
     }
   }, []);
 
+  const handleAddAccess = (data: GroupLine | undefined | null) => {
+    if (!data) return;
+    const newAccess = [...lines, data];
+    reset({ groupLine: newAccess });
+  };
+
   useEffect(() => {
     // This effect can be used to initialize form values or perform side effects
     if (group) {
@@ -145,14 +157,35 @@ function GroupFormView({
         userId: null,
         userIds: group.users,
         active: group.active,
+        groupLine: group.groupLines,
       };
       originalValuesRef.current = initialValues;
       reset(initialValues);
     } else {
       originalValuesRef.current = null;
-      reset({ name: "", userId: null, userIds: [], active: true });
+      reset({
+        name: "",
+        userId: null,
+        userIds: [],
+        active: true,
+        groupLine: [],
+      });
     }
   }, [group]);
+
+  useEffect(() => {
+    const fetchModelsMany2one = async () => {
+      const res = await getModelsMany2one({
+        domain: ["and", ["active", "=", true]],
+      });
+
+      if (!res.success) return;
+      const data = res.data || [];
+      setModelsMany2one(data);
+    };
+
+    fetchModelsMany2one();
+  }, []);
 
   return (
     <FormTemplate
@@ -186,16 +219,18 @@ function GroupFormView({
           <Form.Check {...register("active")} label="Activo" id="Activo" />
         </Form.Group>
       </ViewGroup>
-      <FormBook dKey="models">
-        <FormPage title="Modelos" eventKey="models">
-          <h6>Accesos</h6>
-        </FormPage>
-        <FormPage title="Campos" eventKey="fields">
-          <h5>Campos de modelo</h5>
+      <FormBook dKey="accessPage">
+        <FormPage title="Accesos" eventKey="accessPage">
+          <GroupAccessList groupLines={lines} />
+          <GroupAccesModelsForm
+            getNewValue={handleAddAccess}
+            modelList={modelsMany2one}
+            modelId={modelId}
+          />
         </FormPage>
         <FormPage
           title={`Usuarios (${group?.users.length ?? 0})`}
-          eventKey="users"
+          eventKey="usersPage"
         >
           <div className="d-flex py-2">
             <Many2one<User>
