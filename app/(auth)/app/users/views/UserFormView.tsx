@@ -3,13 +3,14 @@
 import FormTemplate, {
   FormBook,
   FormPage,
+  TFormState,
   ViewGroup,
 } from "@/components/templates/FormTemplate";
 import { UserWithPartner } from "@/libs/definitions";
 import { Many2one } from "@/ui/Many2one";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "react-bootstrap";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormState } from "react-hook-form";
 import { createUser, updateUser } from "../actions";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,17 @@ type TInputs = {
   groupId: string | null;
   active: boolean;
 };
+
+const formStates: TFormState[] = [
+  {
+    name: "not_confirmed",
+    label: "sin confirmar",
+  },
+  {
+    name: "confirmed",
+    label: "confirmado",
+  },
+];
 
 function UserFormView({
   user,
@@ -136,6 +148,8 @@ function UserFormView({
         disableForm={isSubmitting}
         withActivity={true}
         entityName="users"
+        formStates={formStates}
+        state={user?.state ?? "not_confirmed"}
         formActions={[
           {
             string: "Restablecer contraseña",

@@ -44,6 +44,7 @@ function UserListView({
           <TableTemplate.Column name="lastLogin">
             última conexion
           </TableTemplate.Column>
+          <TableTemplate.Column name="state">estado</TableTemplate.Column>
           <TableTemplate.Column name="createdAt">
             creado el
           </TableTemplate.Column>
@@ -66,9 +67,13 @@ function UserListView({
               <ListItem name="login">{user.login}</ListItem>
               <ListItem name="active" className="text-center">
                 {user.active ? (
-                  <Badge bg="success">Activo</Badge>
+                  <Badge pill bg="success">
+                    Activo
+                  </Badge>
                 ) : (
-                  <Badge bg="danger">Inactivo</Badge>
+                  <Badge pill bg="danger">
+                    Inactivo
+                  </Badge>
                 )}
               </ListItem>
               <ListItem name="groupId">
@@ -76,6 +81,17 @@ function UserListView({
               </ListItem>
               <ListItem name="lastLogin">
                 {formatDate(user.lastLogin || null) || "no conectado"}
+              </ListItem>
+              <ListItem name="state" className="text-center">
+                {user.state === "not_confirmed" ? (
+                  <Badge pill bg="warning">
+                    Sin confirmar
+                  </Badge>
+                ) : (
+                  <Badge pill bg="info">
+                    Confirmado
+                  </Badge>
+                )}
               </ListItem>
               <ListItem name="createdAt">
                 {formatDate(user.createdAt || null)}

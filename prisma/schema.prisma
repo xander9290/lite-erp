@@ -55,6 +55,7 @@ model User {
     name        String? @unique
     displayName String  @unique @map("display_name")
     active      Boolean @default(true)
+    state       String  @default("not_confirmed")
 
     // modelos creados
     createdPartners Partner[] @relation("CreateUidPartners")

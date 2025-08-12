@@ -206,8 +206,9 @@ function FormTemplate({
                 {formStates?.map((st, i) => (
                   <ListGroup.Item
                     key={`form-states-${i}-${st.label}`}
-                    className="border fw-bolder text-uppercase"
+                    className="border fw-bolder text-uppercase opacity"
                     active={st.name === state ? true : false}
+                    variant="secondary"
                   >
                     {st.label || "estado"}
                   </ListGroup.Item>

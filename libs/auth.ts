@@ -2,6 +2,7 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "./core/db/ExtendedPrisma";
 import bcrypt from "bcryptjs";
+import { prisma } from "./prisma";
 
 export const authOptions = {
   providers: [
@@ -41,6 +42,7 @@ export const authOptions = {
 
         await db.update("user", user.id, {
           lastLogin: new Date(),
+          state: user.state === "not_confirmed" ? "confirmed" : "confirmed",
         });
 
         let imgUrl = null;
