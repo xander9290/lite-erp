@@ -33,8 +33,6 @@ async function UsersMainView({
     await db.find("user", ["or", [filter, "ilike", search]]),
   ]);
 
-  console.log(users);
-
   const resUser = await fetchUser({ id });
   const user = resUser.data || null;
 

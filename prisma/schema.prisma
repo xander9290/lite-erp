@@ -181,7 +181,7 @@ model ModelFieldLine {
     type        String
     required    Boolean @default(false)
 
-    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id], onDelete: Cascade)
+    model   Model?  @relation("RelatedModel", fields: [modelId], references: [name], onDelete: Cascade)
     modelId String? @map("model_id")
 
     createdAt DateTime @default(now()) @map("created_at")

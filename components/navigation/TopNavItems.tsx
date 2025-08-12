@@ -1,9 +1,15 @@
 "use client";
 
+import { useAccess } from "@/context/AccessContext";
 import Link from "next/link";
 import { Nav, NavDropdown } from "react-bootstrap";
 
 function TopNavItems() {
+  const access = useAccess("app");
+
+  console.log(
+    access.find((field) => field.fieldName === "saleMenu")?.invisible
+  );
   return (
     <Nav className="me-auto">
       {/* VENTAS */}
@@ -13,6 +19,9 @@ function TopNavItems() {
             <i className="bi bi-graph-up me-1"></i>
             <span>Ventas</span>
           </>
+        }
+        disabled={
+          access.find((field) => field.fieldName === "saleMenu")?.invisible
         }
       >
         <NavDropdown.Item>Cotizaciones</NavDropdown.Item>
@@ -26,6 +35,9 @@ function TopNavItems() {
             <span>Compras</span>
           </>
         }
+        disabled={
+          access.find((field) => field.fieldName === "purchaseMenu")?.invisible
+        }
       >
         <NavDropdown.Item>Cotizaciones</NavDropdown.Item>
       </NavDropdown>
@@ -37,6 +49,10 @@ function TopNavItems() {
             <i className="bi bi-file-earmark-text-fill me-1"></i>
             <span>Facturación</span>
           </>
+        }
+        disabled={
+          access.find((field) => field.fieldName === "accountingMenu")
+            ?.invisible
         }
       >
         <NavDropdown.Item>
@@ -56,6 +72,9 @@ function TopNavItems() {
             <i className="bi bi-journal-bookmark-fill me-1"></i>
             <span>Contactos</span>
           </>
+        }
+        disabled={
+          access.find((field) => field.fieldName === "partnerMenu")?.invisible
         }
       >
         <NavDropdown.Item>
@@ -80,6 +99,9 @@ function TopNavItems() {
             <span>Inventario</span>
           </>
         }
+        disabled={
+          access.find((field) => field.fieldName === "inventoryMenu")?.invisible
+        }
       >
         <NavDropdown.Item>
           <i className="bi bi-boxes me-1"></i>
@@ -102,6 +124,9 @@ function TopNavItems() {
             <i className="bi bi-gear-fill me-1"></i>
             <span>Ajustes</span>
           </>
+        }
+        disabled={
+          access.find((field) => field.fieldName === "settingsMenu")?.invisible
         }
       >
         <NavDropdown.Item as={Link} href={`/app/users?view_mode=list&page=1`}>

@@ -354,3 +354,46 @@ export async function deleteGroupLine({
     };
   }
 }
+
+export async function fetchAccess({
+  userId,
+}: {
+  userId: string | null;
+}): Promise<ActionResponse<GroupLine[] | null>> {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const access = await prisma.groupLine.findMany({
+      where: {
+        Group: {
+          users: {
+            some: { id: userId },
+          },
+        },
+      },
+    });
+
+    if (!access) {
+      return {
+        success: false,
+        message: "ACCESS NOT FOUND",
+      };
+    }
+
+    return {
+      success: true,
+      message: "ACCESS WAS FOUND",
+      data: access,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
