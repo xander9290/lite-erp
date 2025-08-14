@@ -11,7 +11,7 @@ function TableTemplate({
   className?: string;
 }) {
   return (
-    <Table striped size="sm" className={className} hover>
+    <Table size="sm" className={className} hover>
       {children}
     </Table>
   );

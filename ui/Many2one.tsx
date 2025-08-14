@@ -19,6 +19,7 @@ type Props<T extends Many2OneOption> = {
   disabled?: boolean;
   size?: "sm" | "lg";
   callBackMode: "object" | "id";
+  className?: string;
 };
 
 export function Many2one<T extends Many2OneOption>({
@@ -29,6 +30,7 @@ export function Many2one<T extends Many2OneOption>({
   disabled,
   size,
   callBackMode = "id",
+  className,
 }: Props<T>) {
   const {
     field: { value, onChange },
@@ -62,10 +64,7 @@ export function Many2one<T extends Many2OneOption>({
     return (
       options?.filter(
         (opt) =>
-          opt &&
-          (opt.name ?? opt.displayName)
-            ?.toLowerCase()
-            .includes(query.toLowerCase())
+          opt && opt.displayName?.toLowerCase().includes(query.toLowerCase())
       ) ?? []
     );
   }, [query, options]);
@@ -143,7 +142,7 @@ export function Many2one<T extends Many2OneOption>({
   };
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className={className}>
       <Form.Control
         ref={inputRef}
         type="text"
@@ -176,16 +175,18 @@ export function Many2one<T extends Many2OneOption>({
               width: "100%",
               maxHeight: "200px",
               overflowY: "auto",
-              overflowX: "hidden",
+              overflowX: "auto",
               zIndex: 1050,
+              fontSize: "0.9rem",
             }}
             className="p-0"
           >
-            {filteredOptions.slice(0, 10).map((option, index) => (
+            {filteredOptions.slice(0, 5).map((option, index) => (
               <Dropdown.Item
                 key={option.id}
                 onMouseDown={() => handleSelect(option)}
                 active={index === highlightedIndex}
+                className="text-wrap border-bottom"
               >
                 {option.displayName}
               </Dropdown.Item>

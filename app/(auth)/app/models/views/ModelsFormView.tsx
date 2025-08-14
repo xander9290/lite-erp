@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { createActivity } from "@/app/actions/user-actions";
 import ModelsFieldList from "./ModelsFieldList";
 import FieldFormView from "./FieldFormView";
+import { useAccess } from "@/context/AccessContext";
 
 type TInputs = {
   name: string;
@@ -31,6 +32,11 @@ function ModelsFormView({
   modelId: string | null;
   model: ModelsWithAttrs | null;
 }) {
+  const access = useAccess("app");
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsModelsMenu"
+  );
+
   const {
     register,
     formState: { isDirty, isSubmitting, errors },
@@ -85,6 +91,9 @@ function ModelsFormView({
     }
   }, [model]);
 
+  if (isAllowed && isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
+
   return (
     <FormTemplate
       entityName="models"
@@ -124,13 +133,13 @@ function ModelsFormView({
         </Form.Group>
       </ViewGroup>
       <ViewGroupFluid>
-        <FormBook dKey="Campos">
-          <FormPage title="Campos" eventKey="fields">
-            <FieldFormView getNewValue={handleGetNewValue} modelId={modelId} />
+        <FormBook dKey="fieldsPage">
+          <FormPage title="Campos" eventKey="fieldsPage">
             <ModelsFieldList
               fieldLines={fields || []}
               path={`/app/models?view_mode=form&id=${modelId}`}
             />
+            <FieldFormView getNewValue={handleGetNewValue} modelId={modelId} />
           </FormPage>
         </FormBook>
       </ViewGroupFluid>

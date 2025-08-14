@@ -1,5 +1,6 @@
 "use server";
 import { Model, ModelFieldLine } from "@/generate/prisma";
+import { Domain } from "@/libs/core/db/domainParser";
 import { db } from "@/libs/core/db/ExtendedPrisma";
 import { ActionResponse } from "@/libs/definitions";
 import { prisma } from "@/libs/prisma";
@@ -308,6 +309,54 @@ export async function deleteField({
       success: true,
       message: "RECORD WAS DELETED",
       data: true,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function getModelsMany2one({
+  domain,
+}: {
+  domain: Domain;
+}): Promise<ActionResponse<Model[]>> {
+  try {
+    const models: Model[] = await db.find("model", domain);
+
+    if (!models) {
+      return {
+        success: false,
+        message: "MODELS NOT FETCHED",
+      };
+    }
+
+    return {
+      success: true,
+      message: "FETCHED MODELS",
+      data: models,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function getFieldsMany2one({
+  domain,
+}: {
+  domain: Domain;
+}): Promise<ActionResponse<ModelFieldLine[]>> {
+  try {
+    const fields: ModelFieldLine[] = await db.find("modelFieldLine", domain);
+    return {
+      success: true,
+      message: "FIELDS WAS FOUND",
+      data: fields,
     };
   } catch (error: unknown) {
     return {

@@ -1,7 +1,6 @@
 import NotFound from "@/app/not-found";
-import FieldsListView, { FieldsWithAttrs } from "./FieldsListView";
+import FieldsListView from "./FieldsListView";
 import { db } from "@/libs/core/db/ExtendedPrisma";
-import { prisma } from "@/libs/prisma";
 
 async function FieldsMainView({
   viewMode,

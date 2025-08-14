@@ -3,6 +3,7 @@
 import ListTemplate from "@/components/templates/ListTemplate";
 import { GroupWithAttrs } from "../actions";
 import GroupKanbanView from "./GroupKanbanView";
+import { useAccess } from "@/context/AccessContext";
 
 function GroupListView({
   page,
@@ -16,6 +17,13 @@ function GroupListView({
   filter: string;
   groups: GroupWithAttrs[] | null;
 }) {
+  const access = useAccess("app");
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsGroupsMenu"
+  );
+
+  if (isAllowed && isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
   return (
     <ListTemplate
       page={page}

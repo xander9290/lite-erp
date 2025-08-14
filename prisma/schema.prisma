@@ -55,6 +55,7 @@ model User {
     name        String? @unique
     displayName String  @unique @map("display_name")
     active      Boolean @default(true)
+    state       String  @default("not_confirmed")
 
     // modelos creados
     createdPartners Partner[] @relation("CreateUidPartners")
@@ -106,16 +107,13 @@ model Group {
 model GroupLine {
     id String @id @default(cuid())
 
-    pageKey    String? @map("page_key")
-    buttonName String? @map("button_name")
-    menuName   String? @map("menu_name")
-
     entityName String? @map("entity_name")
     fieldName  String? @map("field_name")
 
     invisible Boolean @default(false)
     required  Boolean @default(false)
     readonly  Boolean @default(false)
+
     notCreate Boolean @default(false)
     noEdit    Boolean @default(false)
 
@@ -184,7 +182,7 @@ model ModelFieldLine {
     type        String
     required    Boolean @default(false)
 
-    model   Model?  @relation("RelatedModel", fields: [modelId], references: [id], onDelete: Cascade)
+    model   Model?  @relation("RelatedModel", fields: [modelId], references: [name], onDelete: Cascade)
     modelId String? @map("model_id")
 
     createdAt DateTime @default(now()) @map("created_at")

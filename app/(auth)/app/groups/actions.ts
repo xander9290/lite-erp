@@ -248,3 +248,152 @@ export async function removeUser({
     };
   }
 }
+
+export async function createGroupLine({
+  modelId,
+  entityName,
+  fieldName,
+  notCreate,
+  noEdit,
+  invisible,
+  required,
+  readonly,
+}: {
+  modelId: string | null;
+  entityName: string;
+  fieldName: string;
+  notCreate: boolean;
+  noEdit: boolean;
+  invisible: boolean;
+  required: boolean;
+  readonly: boolean;
+}): Promise<ActionResponse<GroupLine | null>> {
+  try {
+    if (!modelId) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const session = await auth();
+
+    const newAccess = await prisma.groupLine.create({
+      data: {
+        entityName,
+        fieldName,
+        notCreate,
+        noEdit,
+        invisible,
+        required,
+        readonly,
+        createUid: session?.user.id,
+        Group: {
+          connect: { id: modelId },
+        },
+      },
+    });
+
+    if (!newAccess) {
+      return {
+        success: false,
+        message: "RECORD WAS NOT CREATED",
+      };
+    }
+
+    return {
+      success: true,
+      message: "RECORD WAS CREATED",
+      data: newAccess,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function deleteGroupLine({
+  id,
+}: {
+  id: string | null;
+}): Promise<ActionResponse<boolean>> {
+  try {
+    if (!id) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const deletedRecord = await prisma.groupLine.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!deletedRecord) {
+      return {
+        success: false,
+        message: "RECORD WAS NOT DELETED",
+      };
+    }
+
+    revalidatePath("/app/groups");
+
+    return {
+      success: true,
+      message: "RECORD WAS DELETED",
+      data: true,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}
+
+export async function fetchAccess({
+  userId,
+}: {
+  userId: string | null;
+}): Promise<ActionResponse<GroupLine[] | null>> {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        message: "ID NOT DEFINED",
+      };
+    }
+
+    const access = await prisma.groupLine.findMany({
+      where: {
+        Group: {
+          users: {
+            some: { id: userId },
+          },
+        },
+      },
+    });
+
+    if (!access) {
+      return {
+        success: false,
+        message: "ACCESS NOT FOUND",
+      };
+    }
+
+    return {
+      success: true,
+      message: "ACCESS WAS FOUND",
+      data: access,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: "Error: " + error,
+    };
+  }
+}

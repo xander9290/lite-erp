@@ -3,6 +3,7 @@
 import FormTemplate, {
   FormBook,
   FormPage,
+  TFormState,
   ViewGroup,
 } from "@/components/templates/FormTemplate";
 import { UserWithPartner } from "@/libs/definitions";
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { createActivity } from "@/app/actions/user-actions";
 import { GroupWithAttrs } from "../../groups/actions";
 import ModalChangeUserPassword from "@/components/modals/ModalChangeUserPassword";
+import { useAccess } from "@/context/AccessContext";
 
 type TInputs = {
   name: string;
@@ -24,6 +26,17 @@ type TInputs = {
   groupId: string | null;
   active: boolean;
 };
+
+const formStates: TFormState[] = [
+  {
+    name: "not_confirmed",
+    label: "sin confirmar",
+  },
+  {
+    name: "confirmed",
+    label: "confirmado",
+  },
+];
 
 function UserFormView({
   user,
@@ -87,6 +100,7 @@ function UserFormView({
   };
 
   const handleChangePassword = () => {
+    if (!user?.active) return;
     setModalChangeUserPassword(true);
   };
 
@@ -125,6 +139,23 @@ function UserFormView({
     }
   }, [user]);
 
+  const access = useAccess("app");
+
+  const userAccess = useAccess("users");
+
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsUsersMenu"
+  );
+
+  if (isAllowed && isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
+
+  const resetPasswordBtnAccess = userAccess.find(
+    (field) => field.fieldName === "resetPassword"
+  )?.readonly;
+
+  const fieldLogin = userAccess.find((field) => field.fieldName === "login");
+
   return (
     <>
       <FormTemplate
@@ -136,18 +167,28 @@ function UserFormView({
         disableForm={isSubmitting}
         withActivity={true}
         entityName="users"
+        formStates={formStates}
+        state={user?.state ?? "not_confirmed"}
         formActions={[
           {
             string: "Restablecer contraseña",
             action: () => handleChangePassword(),
-            disable: user?.active === false,
+            disable: resetPasswordBtnAccess,
+            name: "resetPassword",
           },
         ]}
         active={user?.active}
       >
         <ViewGroup title="Acceso">
-          <Form.Group controlId="userLogin" className="mb-3">
-            <Form.Label>Usuario:</Form.Label>
+          <Form.Group
+            style={{
+              pointerEvents: fieldLogin?.readonly ? "none" : "auto",
+              display: fieldLogin?.invisible ? "none" : "block",
+            }}
+            controlId="userLogin"
+            className="mb-3"
+          >
+            <Form.Label title="login">Usuario:</Form.Label>
             <Form.Control
               {...register("login", { required: "Este campo es requerido" })}
               type="text"
@@ -160,7 +201,7 @@ function UserFormView({
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="userGroupId" className="mb-3">
-            <Form.Label>Grupo:</Form.Label>
+            <Form.Label title="groupId">Grupo:</Form.Label>
             <Many2one<GroupWithAttrs>
               {...register("groupId")}
               control={control}
@@ -180,7 +221,7 @@ function UserFormView({
         </ViewGroup>
         <ViewGroup title="Información personal">
           <Form.Group controlId="userName" className="mb-3">
-            <Form.Label>Nombre:</Form.Label>
+            <Form.Label title="name">Nombre:</Form.Label>
             <Form.Control
               {...register("name", { required: "Este campo es requerido" })}
               type="text"
@@ -193,7 +234,7 @@ function UserFormView({
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="userEmail" className="mb-3">
-            <Form.Label>Correo:</Form.Label>
+            <Form.Label title="email">Correo:</Form.Label>
             <Form.Control
               {...register("email")}
               type="email"

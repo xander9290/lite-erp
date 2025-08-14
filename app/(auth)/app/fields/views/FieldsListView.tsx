@@ -5,8 +5,8 @@ import TableTemplate, {
   ListItem,
   ListItemLink,
 } from "@/components/templates/TableTemplate";
+import { useAccess } from "@/context/AccessContext";
 import { Model, ModelFieldLine } from "@/generate/prisma";
-import { Button } from "react-bootstrap";
 
 export interface FieldsWithAttrs extends ModelFieldLine {
   model: Model | null;
@@ -24,6 +24,13 @@ function FieldsListView({
   filter: string;
   fields: FieldsWithAttrs[] | null;
 }) {
+  const access = useAccess("app");
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsFieldsMenu"
+  );
+
+  if (isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
   return (
     <ListTemplate
       page={page}
@@ -35,6 +42,7 @@ function FieldsListView({
         { key: "displayName", value: "Nombre" },
         { key: "label", value: "Etiqueta" },
         { key: "model.displayName", value: "Modelo" },
+        { key: "type", value: "Tipo" },
       ]}
     >
       <TableTemplate>
