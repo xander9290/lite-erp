@@ -79,7 +79,7 @@ function GroupAccesModelsForm({
 
   const handleFetchFieldsMany2one = async () => {
     const res = await getFieldsMany2one({
-      domain: ["and", ["modelId", "=", modelMany2one?.id]],
+      domain: ["and", ["modelId", "=", modelMany2one?.name]],
     });
     console.log(res.data);
     if (res.success) setFieldsMany2one(res.data || []);

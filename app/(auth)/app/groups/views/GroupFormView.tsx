@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import GroupAccesModelsForm from "./GroupAccesModelsForm";
 import { getModelsMany2one } from "../../models/actions";
 import GroupAccessList from "./GroupAccessList";
+import { useAccess } from "@/context/AccessContext";
 
 type TInputs = {
   name: string;
@@ -186,6 +187,14 @@ function GroupFormView({
 
     fetchModelsMany2one();
   }, []);
+
+  const access = useAccess("app");
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsGroupsMenu"
+  );
+
+  if (isAllowed && isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
 
   return (
     <FormTemplate

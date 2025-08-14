@@ -177,6 +177,7 @@ export function Many2one<T extends Many2OneOption>({
               overflowY: "auto",
               overflowX: "auto",
               zIndex: 1050,
+              fontSize: "0.9rem",
             }}
             className="p-0"
           >
@@ -185,7 +186,7 @@ export function Many2one<T extends Many2OneOption>({
                 key={option.id}
                 onMouseDown={() => handleSelect(option)}
                 active={index === highlightedIndex}
-                className="text-break border-bottom"
+                className="text-wrap border-bottom"
               >
                 {option.displayName}
               </Dropdown.Item>

@@ -129,19 +129,47 @@ function TopNavItems() {
           access.find((field) => field.fieldName === "settingsMenu")?.invisible
         }
       >
-        <NavDropdown.Item as={Link} href={`/app/users?view_mode=list&page=1`}>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/users?view_mode=list&page=1`}
+          disabled={
+            access.find((field) => field.fieldName === "settingsUsersMenu")
+              ?.invisible
+          }
+        >
           <i className="bi bi-person-fill me-1"></i>
           <span>Usuarios</span>
         </NavDropdown.Item>
-        <NavDropdown.Item as={Link} href={`/app/groups?view_mode=list&page=1`}>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/groups?view_mode=list&page=1`}
+          disabled={
+            access.find((field) => field.fieldName === "settingsGroupsMenu")
+              ?.invisible
+          }
+        >
           <i className="bi bi-people-fill me-1"></i>
           <span>Grupos</span>
         </NavDropdown.Item>
-        <NavDropdown.Item as={Link} href={`/app/models?view_mode=list&page=1`}>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/models?view_mode=list&page=1`}
+          disabled={
+            access.find((field) => field.fieldName === "settingsModelsMenu")
+              ?.invisible
+          }
+        >
           <i className="bi bi-database-fill me-1"></i>
           <span>Modelos</span>
         </NavDropdown.Item>
-        <NavDropdown.Item as={Link} href={`/app/fields?view_mode=list&page=1`}>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/fields?view_mode=list&page=1`}
+          disabled={
+            access.find((field) => field.fieldName === "settingsFieldsMenu")
+              ?.invisible
+          }
+        >
           <i className="bi bi-list-columns-reverse me-1"></i>{" "}
           <span>Campos</span>
         </NavDropdown.Item>

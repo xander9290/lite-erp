@@ -5,6 +5,7 @@ import TableTemplate, {
   ListItem,
   ListItemLink,
 } from "@/components/templates/TableTemplate";
+import { useAccess } from "@/context/AccessContext";
 import { UserWithPartner } from "@/libs/definitions";
 import { formatDate } from "@/libs/helpers";
 import ImageAvatar from "@/ui/ImageAvatar";
@@ -21,6 +22,13 @@ function UserListView({
   total: number;
   users: UserWithPartner[] | null;
 }) {
+  const access = useAccess("app");
+  const isAllowed = access.find(
+    (field) => field.fieldName === "settingsUsersMenu"
+  );
+
+  if (isAllowed && isAllowed?.invisible)
+    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
   return (
     <ListTemplate
       page={page}
