@@ -12,7 +12,7 @@ function ContactsFormView({ partner }: { partner: PartnerContacts | null }) {
     formState: { isDirty, isSubmitting },
   } = useForm<TInputs>();
 
-  const onSubmit: SubmitHandler<TInputs> = (data) => {};
+  const onSubmit: SubmitHandler<TInputs> = () => {};
 
   const handleRevert = () => {};
 

@@ -7,7 +7,7 @@ function TopNav() {
   return (
     <Navbar
       expand="lg"
-      className="bg-body-tertiary border-bottom border-secondary"
+      className="bg-body-tertiary border-secondary"
       sticky="top"
     >
       <Container fluid>
