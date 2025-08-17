@@ -4,7 +4,9 @@ import FormTemplate from "@/components/templates/FormTemplate";
 import { PartnerContacts } from "@/libs/definitions";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-type TInputs = {};
+type TInputs = {
+  name: string;
+};
 
 function ContactsFormView({ partner }: { partner: PartnerContacts | null }) {
   const {
