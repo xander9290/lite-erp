@@ -13,7 +13,7 @@ function ModelsKanbanView({ models }: { models: ModelsWithAttrs[] | null }) {
             key={model.id}
             formView={`/app/models?view_mode=form&id=${model.id}`}
           >
-            <div style={{ minHeight: "80px" }}>
+            <div style={{ height: "75px" }}>
               <h5 className="card-title fw-bold text-start">
                 {model.displayName}
               </h5>

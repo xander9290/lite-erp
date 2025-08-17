@@ -30,6 +30,10 @@ model Partner {
     displayType String  @default("internal") @map("display_type")
     active      Boolean @default(true)
 
+    parentId String?   @map("parent_id")
+    parent   Partner?  @relation("Children", fields: [parentId], references: [id])
+    children Partner[] @relation("Children")
+
     relatedUser User? @relation("RelatedUser")
 
     userId    String? @map("user_id")

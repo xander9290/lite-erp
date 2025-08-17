@@ -200,7 +200,7 @@ function FormTemplate({
               </Alert>
             )}
             <div className="d-flex justify-content-between align-items-end mb-2">
-              <h2 className="card-title fw-bolder">{name ?? "nuevo"}</h2>
+              <h2 className="card-title fw-bolder">{name ?? "Nuevo"}</h2>
               {/* STATEBAR - Desktop */}
               <ListGroup horizontal className="d-none d-md-flex">
                 {formStates?.map((st, i) => (

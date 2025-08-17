@@ -75,13 +75,9 @@ function UserListView({
               <ListItem name="login">{user.login}</ListItem>
               <ListItem name="active" className="text-center">
                 {user.active ? (
-                  <Badge pill bg="success">
-                    Activo
-                  </Badge>
+                  <Badge bg="success">Activo</Badge>
                 ) : (
-                  <Badge pill bg="danger">
-                    Inactivo
-                  </Badge>
+                  <Badge bg="danger">Inactivo</Badge>
                 )}
               </ListItem>
               <ListItem name="groupId">
@@ -92,13 +88,9 @@ function UserListView({
               </ListItem>
               <ListItem name="state" className="text-center">
                 {user.state === "not_confirmed" ? (
-                  <Badge pill bg="warning">
-                    Sin confirmar
-                  </Badge>
+                  <Badge bg="danger">Sin confirmar</Badge>
                 ) : (
-                  <Badge pill bg="info">
-                    Confirmado
-                  </Badge>
+                  <Badge bg="success">Confirmado</Badge>
                 )}
               </ListItem>
               <ListItem name="createdAt">

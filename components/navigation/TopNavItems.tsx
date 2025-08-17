@@ -77,15 +77,36 @@ function TopNavItems() {
           access.find((field) => field.fieldName === "partnerMenu")?.invisible
         }
       >
-        <NavDropdown.Item>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/contacts?view_mode=list&page=1&type=customer`}
+          disabled={
+            access.find((field) => field.fieldName === "partnerMenuCustomer")
+              ?.invisible
+          }
+        >
           <i className="bi bi-person-vcard-fill me-1"></i>
           <span>Clietes</span>
         </NavDropdown.Item>
-        <NavDropdown.Item>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/contacts?view_mode=list&page=1&type=supplier`}
+          disabled={
+            access.find((field) => field.fieldName === "partnerMenuSupplier")
+              ?.invisible
+          }
+        >
           <i className="bi bi-building me-1"></i>
           <span>Proveedores</span>
         </NavDropdown.Item>
-        <NavDropdown.Item>
+        <NavDropdown.Item
+          as={Link}
+          href={`/app/contacts?view_mode=list&page=1&type=internal`}
+          disabled={
+            access.find((field) => field.fieldName === "partnerMenuInternal")
+              ?.invisible
+          }
+        >
           <i className="bi bi-person-bounding-box me-1"></i>
           <span>Empleados</span>
         </NavDropdown.Item>
