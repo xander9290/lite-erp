@@ -39,13 +39,6 @@ function ContactsFormView({ partner }: { partner: PartnerContacts | null }) {
       withActivity={true}
       name={partner?.name}
       active={partner?.active}
-      formActions={[
-        {
-          action: () => alert("Hola"),
-          name: "email",
-          string: "Saludo",
-        },
-      ]}
     >
       <ViewGroup>
         <Entry
