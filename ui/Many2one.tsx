@@ -20,6 +20,7 @@ type Props<T extends Many2OneOption> = {
   size?: "sm" | "lg";
   callBackMode: "object" | "id";
   className?: string;
+  required?: boolean;
 };
 
 export function Many2one<T extends Many2OneOption>({
@@ -31,6 +32,7 @@ export function Many2one<T extends Many2OneOption>({
   size,
   callBackMode = "id",
   className,
+  required,
 }: Props<T>) {
   const {
     field: { value, onChange },
@@ -163,6 +165,7 @@ export function Many2one<T extends Many2OneOption>({
         isInvalid={!!error}
         disabled={disabled}
         size={size}
+        required={required}
       />
       <Form.Control.Feedback type="invalid">
         {error?.message}

@@ -1,8 +1,9 @@
 "use client";
 
+import { useAccess } from "@/context/AccessContext";
 import { ModalBasicProps } from "@/libs/definitions";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, lazy } from "react";
+import { Suspense, useState, lazy, CSSProperties } from "react";
 
 import {
   Alert,
@@ -29,7 +30,7 @@ type FormViewTemplateProps = {
   state?: string;
   name?: string;
   disableForm?: boolean;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  onSubmit: React.MouseEventHandler<HTMLButtonElement>;
   isDirty: boolean;
   revert: () => void;
   notCreate?: boolean;
@@ -68,6 +69,8 @@ function FormTemplate({
   entityName,
   active,
 }: FormViewTemplateProps) {
+  const access = useAccess(entityName);
+
   const searchParams = useSearchParams();
   const model_id = searchParams.get("id");
 
@@ -88,33 +91,47 @@ function FormTemplate({
     }
   };
 
+  const not_create =
+    access.filter((attr) => attr.notCreate === true)[0]?.notCreate || false;
+  const no_edit =
+    access.filter((attr) => attr.noEdit === true)[0]?.noEdit || false;
+
+  console.table({ no_edit, not_create });
+
   return (
     <Row className="h-100 overflow-auto">
       <Col xs="12" md="8" className="h-100">
-        <Form
-          onSubmit={onSubmit}
-          className="card d-flex flex-column shadow h-100"
-        >
+        <Form className="card d-flex flex-column shadow h-100">
           <fieldset
             className="card-header d-flex justify-content-between"
             disabled={disableForm}
           >
             <div className="d-flex align-items-center gap-2">
               {model_id === "null" ? null : (
-                <Button
-                  variant="primary"
-                  className="fw-bold"
-                  onClick={() => router.replace(viewForm)}
-                  style={{ display: notCreate ? "none" : "inline-block" }}
+                <span
+                  style={{
+                    display: not_create ? "none" : "inline-block",
+                  }}
                 >
-                  Nuevo
-                </Button>
+                  <Button
+                    variant="primary"
+                    className="fw-bold"
+                    onClick={() => router.replace(viewForm)}
+                    style={{ display: notCreate ? "none" : "inline-block" }}
+                  >
+                    Nuevo
+                  </Button>
+                </span>
               )}
               <Button
                 variant="secondary"
-                type="submit"
+                type="button"
                 title="Guardar"
                 disabled={!isDirty}
+                style={{
+                  display: no_edit ? "none" : "inline-block",
+                }}
+                onClick={onSubmit}
               >
                 {disableForm ? (
                   <Spinner animation="border" size="sm" />
@@ -128,6 +145,9 @@ function FormTemplate({
                 title="Deshacer"
                 disabled={!isDirty}
                 onClick={revert}
+                style={{
+                  display: no_edit ? "none" : "inline-block",
+                }}
               >
                 <i className="bi bi-arrow-counterclockwise"></i>
               </Button>
@@ -135,49 +155,75 @@ function FormTemplate({
             <div className="d-flex gap-2">
               {/* Desktop buttons */}
               <div className="d-none d-md-flex gap-2">
-                {formActions?.map((action, i) => (
-                  <Button
-                    variant="primary"
-                    key={`form-action-${i}-${action.string}`}
-                    onClick={() =>
-                      handleActionForm(action.action, action.confirm)
-                    }
-                    className=""
-                    style={{
-                      display: action.invisible ? "none" : "inline-block",
-                    }}
-                    disabled={action.disable}
-                    title={action.name}
-                  >
-                    {action.string}
-                  </Button>
-                ))}
+                {formActions?.map((action, i) => {
+                  const fieldAccessAttrs = access?.find(
+                    (field) => field.fieldName === action.name
+                  );
+                  const styleProps: CSSProperties = {
+                    display: fieldAccessAttrs?.invisible ? "none" : "block",
+                    pointerEvents: fieldAccessAttrs?.readonly ? "none" : "auto",
+                  };
+                  return (
+                    <div
+                      style={styleProps}
+                      key={`form-action-${i}-${action.string}`}
+                    >
+                      <Button
+                        variant="dark"
+                        onClick={() =>
+                          handleActionForm(action.action, action.confirm)
+                        }
+                        style={{
+                          display: action.invisible ? "none" : "inline-block",
+                        }}
+                        disabled={action.disable}
+                        title={action.name}
+                        type="button"
+                      >
+                        {action.string}
+                      </Button>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Mobile dropdown */}
               {formActions && (
                 <div className="d-flex d-md-none">
-                  <DropdownButton
-                    variant="primary"
-                    title="Acciones"
-                    align="end"
-                  >
+                  <DropdownButton variant="dark" title="Acciones" align="end">
                     {formActions
                       ?.filter((action) => !action.invisible)
-                      .map((action, i) => (
-                        <Dropdown.Item
-                          as="button"
-                          type="button"
-                          key={`form-action-dropdown-${i}-${action.string}`}
-                          onClick={() =>
-                            handleActionForm(action.action, action.confirm)
-                          }
-                          disabled={action.disable}
-                          title={action.name}
-                        >
-                          {action.string}
-                        </Dropdown.Item>
-                      ))}
+                      .map((action, i) => {
+                        const fieldAccessAttrs = access?.find(
+                          (field) => field.fieldName === action.name
+                        );
+                        const styleProps: CSSProperties = {
+                          display: fieldAccessAttrs?.invisible
+                            ? "none"
+                            : "block",
+                          pointerEvents: fieldAccessAttrs?.readonly
+                            ? "none"
+                            : "auto",
+                        };
+                        return (
+                          <span
+                            style={styleProps}
+                            key={`form-action-dropdown-${i}-${action.string}`}
+                          >
+                            <Dropdown.Item
+                              as="button"
+                              type="button"
+                              onClick={() =>
+                                handleActionForm(action.action, action.confirm)
+                              }
+                              disabled={action.disable}
+                              title={action.name}
+                            >
+                              {action.string}
+                            </Dropdown.Item>
+                          </span>
+                        );
+                      })}
                   </DropdownButton>
                 </div>
               )}
