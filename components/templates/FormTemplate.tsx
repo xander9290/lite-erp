@@ -81,11 +81,17 @@ function FormTemplate({
       show: false,
       action: undefined,
       string: undefined,
+      onHide: () => {},
     });
 
   const handleActionForm = (action: () => void, confirm?: string) => {
     if (confirm) {
-      setModalConfirmFormAction({ show: true, action, string: confirm });
+      setModalConfirmFormAction({
+        show: true,
+        action,
+        string: confirm,
+        onHide: () => !modalConfirmFormAction.show,
+      });
     } else {
       action();
     }
@@ -292,7 +298,11 @@ function FormTemplate({
       <ModalActionConfirm
         show={modalConfirmFormAction.show}
         onHide={() =>
-          setModalConfirmFormAction({ show: false, action: undefined })
+          setModalConfirmFormAction({
+            show: false,
+            action: undefined,
+            onHide: () => !modalConfirmFormAction.show,
+          })
         }
         action={modalConfirmFormAction.action}
         string={modalConfirmFormAction.string}
@@ -404,13 +414,15 @@ const ModalActionConfirm = ({
   };
   return (
     <Modal show={show} onHide={onHide} backdrop="static" centered>
-      <Modal.Header closeButton>Confirmar Acción</Modal.Header>
+      <Modal.Header closeButton>
+        <Modal.Title>Confirmar la acción</Modal.Title>
+      </Modal.Header>
       <Modal.Body>{string ?? "¿Ejecutar acción?"}</Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={onHide}>
+        <Button size="sm" variant="secondary" onClick={onHide}>
           Cancelar
         </Button>
-        <Button variant="success" onClick={handleAccept}>
+        <Button size="sm" variant="primary" onClick={handleAccept}>
           Aceptar
         </Button>
       </Modal.Footer>

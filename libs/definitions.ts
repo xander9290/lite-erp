@@ -8,9 +8,10 @@ export interface ActionResponse<T> {
 
 export interface ModalBasicProps {
   show: boolean;
-  onHide?: () => void;
+  onHide: () => void;
   action?: () => void;
   string?: string;
+  title?: string;
 }
 
 export interface PartnerWithAttrs extends Partner {

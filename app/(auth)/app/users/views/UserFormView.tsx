@@ -12,12 +12,13 @@ import { useEffect, useRef, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createUser, updateUser } from "../actions";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createActivity } from "@/app/actions/user-actions";
 import { GroupWithAttrs } from "../../groups/actions";
 import ModalChangeUserPassword from "@/components/modals/ModalChangeUserPassword";
 import { useAccess } from "@/context/AccessContext";
+import { useModals } from "@/context/ModalContext";
+import VistaNoPermitida from "@/ui/NotAllowed";
 
 type TInputs = {
   name: string;
@@ -47,6 +48,7 @@ function UserFormView({
   modelId: string | null;
   groups: GroupWithAttrs[] | null;
 }) {
+  const { modalError } = useModals();
   const [modalChangeUserPassword, setModalChangeUserPassword] = useState(false);
 
   const originalValuesRef = useRef<TInputs | null>(null);
@@ -65,7 +67,7 @@ function UserFormView({
     if (modelId === "null") {
       const res = await createUser(data);
       if (!res.success) {
-        toast.error(res.message);
+        modalError(res.message);
         return;
       }
       await createActivity({
@@ -81,7 +83,7 @@ function UserFormView({
       };
       const res = await updateUser(newData);
       if (!res.success) {
-        toast.error(res.message);
+        modalError(res.message);
         return;
       }
 
@@ -147,8 +149,7 @@ function UserFormView({
     (field) => field.fieldName === "settingsUsersMenu"
   );
 
-  if (isAllowed && isAllowed?.invisible)
-    return <h2 className="text-center">🚫 VISTA NO PERMITIDA</h2>;
+  if (isAllowed && isAllowed?.invisible) return <VistaNoPermitida />;
 
   const resetPasswordBtnAccess = userAccess.find(
     (field) => field.fieldName === "resetPassword"

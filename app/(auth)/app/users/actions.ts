@@ -211,10 +211,11 @@ export async function updateUser({
     });
 
     if (!changedPartner) {
-      return {
-        success: false,
-        message: "PARTNER COULD NOT BE UPDATED",
-      };
+      // return {
+      //   success: false,
+      //   message: "PARTNER COULD NOT BE UPDATED",
+      // };
+      throw new Error("El contacto no pudo actualizarse");
     }
 
     revalidatePath("/app/users");
@@ -223,10 +224,11 @@ export async function updateUser({
       success: true,
       message: "Se ha actualizado el usuario",
     };
-  } catch (error: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     return {
       success: false,
-      message: "Error: " + error,
+      message: error.message,
     };
   }
 }
