@@ -7,7 +7,6 @@ import FormTemplate, {
   ViewGroup,
 } from "@/components/templates/FormTemplate";
 import { UserWithPartner } from "@/libs/definitions";
-import { Many2one } from "@/ui/Many2one";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -19,6 +18,7 @@ import ModalChangeUserPassword from "@/components/modals/ModalChangeUserPassword
 import { useAccess } from "@/context/AccessContext";
 import { useModals } from "@/context/ModalContext";
 import VistaNoPermitida from "@/ui/NotAllowed";
+import useFields from "@/ui/fields/useFields";
 
 type TInputs = {
   name: string;
@@ -48,7 +48,12 @@ function UserFormView({
   modelId: string | null;
   groups: GroupWithAttrs[] | null;
 }) {
+  const { Entry, Relation, Boolean, PageContent } = useFields({
+    accessModel: "users",
+  });
+
   const { modalError } = useModals();
+
   const [modalChangeUserPassword, setModalChangeUserPassword] = useState(false);
 
   const originalValuesRef = useRef<TInputs | null>(null);
@@ -143,19 +148,11 @@ function UserFormView({
 
   const access = useAccess("app");
 
-  const userAccess = useAccess("users");
-
   const isAllowed = access.find(
     (field) => field.fieldName === "settingsUsersMenu"
   );
 
   if (isAllowed && isAllowed?.invisible) return <VistaNoPermitida />;
-
-  const resetPasswordBtnAccess = userAccess.find(
-    (field) => field.fieldName === "resetPassword"
-  )?.readonly;
-
-  const fieldLogin = userAccess.find((field) => field.fieldName === "login");
 
   return (
     <>
@@ -174,82 +171,67 @@ function UserFormView({
           {
             string: "Restablecer contraseña",
             action: () => handleChangePassword(),
-            disable: resetPasswordBtnAccess,
             name: "resetPassword",
           },
         ]}
-        active={user?.active}
+        active={user?.active ?? true}
       >
         <ViewGroup title="Acceso">
-          <Form.Group
-            style={{
-              pointerEvents: fieldLogin?.readonly ? "none" : "auto",
-              display: fieldLogin?.invisible ? "none" : "block",
-            }}
-            controlId="userLogin"
-            className="mb-3"
-          >
-            <Form.Label title="login">Usuario:</Form.Label>
-            <Form.Control
-              {...register("login", { required: "Este campo es requerido" })}
-              type="text"
-              autoComplete="off"
-              isInvalid={!!errors.login}
-              disabled={user?.active === false}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.login?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="userGroupId" className="mb-3">
-            <Form.Label title="groupId">Grupo:</Form.Label>
-            <Many2one<GroupWithAttrs>
-              {...register("groupId")}
-              control={control}
-              options={groups || []}
-              callBackMode="id"
-              disabled={user?.active === false}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Check
-              type="switch"
-              label="Activo"
-              id="Activo"
-              {...register("active")}
-            />
-          </Form.Group>
+          <Entry
+            register={register("login", {
+              required: "Este campo es requerido",
+            })}
+            label="Usuario:"
+            fieldName="login"
+            invalid={!!errors.login}
+            feedBack={errors.login?.message}
+          />
+          <Relation
+            options={groups || []}
+            callBackMode="id"
+            label="Grupo:"
+            fieldName="groupId"
+            register={register("groupId")}
+            control={control}
+          />
+          <Boolean
+            type="switch"
+            fieldName="active"
+            label="Activo"
+            register={register("active")}
+          />
         </ViewGroup>
         <ViewGroup title="Información personal">
-          <Form.Group controlId="userName" className="mb-3">
-            <Form.Label title="name">Nombre:</Form.Label>
-            <Form.Control
-              {...register("name", { required: "Este campo es requerido" })}
-              type="text"
-              isInvalid={!!errors.name}
-              autoComplete="off"
-              disabled={user?.active === false}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.name?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="userEmail" className="mb-3">
-            <Form.Label title="email">Correo:</Form.Label>
-            <Form.Control
-              {...register("email")}
-              type="email"
-              autoComplete="off"
-              disabled={user?.active === false}
-            />
-          </Form.Group>
+          <Entry
+            register={register("name", { required: "Este campo es requerido" })}
+            invalid={!!errors.name}
+            label="Nombre:"
+            fieldName="name"
+            feedBack={
+              <Form.Control.Feedback type="invalid">
+                {errors.name?.message}
+              </Form.Control.Feedback>
+            }
+          />
+          <Entry
+            label="Correo:"
+            fieldName="email"
+            type="email"
+            register={register("email")}
+          />
         </ViewGroup>
-        <FormBook dKey="leads">
-          <FormPage title="Cartera" eventKey="leads">
-            <h2>Cartera de clientes</h2>
+        <FormBook dKey="partnerLeads">
+          <FormPage eventKey="partnerLeads" title="Carterta">
+            <h3>Cartera de clientes</h3>
           </FormPage>
-          <FormPage title="Otra información" eventKey="otherInfo">
-            <h3>otra información</h3>
+          <FormPage eventKey="otherInfo" title="Otra información">
+            <PageContent fieldName="otherInfo">
+              <Entry
+                register={register("email")}
+                fieldName="otra"
+                label="Otra"
+              />
+            </PageContent>
           </FormPage>
         </FormBook>
       </FormTemplate>

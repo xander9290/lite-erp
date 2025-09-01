@@ -14,9 +14,9 @@ function ErrorModal({ show, onHide, string }: ModalBasicProps) {
       animation={false}
     >
       <Modal.Body>
-        <Modal.Title className="fw-bold">
+        <Modal.Title>
           <i className="bi bi-exclamation-triangle text-warning me-2"></i>
-          Error de validación
+          Operación no válida
         </Modal.Title>
         <p>{string}</p>
         <Button variant="dark" size="sm" onClick={onHide}>

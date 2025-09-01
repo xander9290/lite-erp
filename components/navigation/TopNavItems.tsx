@@ -6,10 +6,6 @@ import { Nav, NavDropdown } from "react-bootstrap";
 
 function TopNavItems() {
   const access = useAccess("app");
-
-  console.log(
-    access.find((field) => field.fieldName === "saleMenu")?.invisible
-  );
   return (
     <Nav className="me-auto">
       {/* VENTAS */}

@@ -102,8 +102,6 @@ function FormTemplate({
   const no_edit =
     access.filter((attr) => attr.noEdit === true)[0]?.noEdit || false;
 
-  console.table({ no_edit, not_create });
-
   return (
     <Row className="h-100 overflow-auto">
       <Col xs="12" md="8" className="h-100">
@@ -322,8 +320,11 @@ export const ViewGroup = ({
 }) => {
   return (
     <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
-      <fieldset className="p-3 bg-body-tertiary rounded" disabled={disabled}>
-        <legend className="fs-4">{title}</legend>
+      <fieldset
+        className="p-3 bg-body-tertiary border border-1 rounded"
+        disabled={disabled}
+      >
+        <legend className="fs-5 text-uppercase">{title}</legend>
         {children}
       </fieldset>
     </Col>
@@ -338,7 +339,7 @@ export const ViewGroupStack = ({
   className?: string;
 }) => {
   return (
-    <div className={`d-flex justify-content-between ${className}`}>
+    <div className={`d-flex justify-content-between gap-1 ${className}`}>
       {children}
     </div>
   );
@@ -353,9 +354,7 @@ export const ViewGroupFluid = ({
 }) => {
   return (
     <Col xs="12" md="12" className="mt-2">
-      <div className={`p-2 bg-body-tertiary rounded ${classname}`}>
-        {children}
-      </div>
+      <div className={`p-2 rounded ${classname}`}>{children}</div>
     </Col>
   );
 };
@@ -370,7 +369,7 @@ export const FormBook = ({
   const [key, setKey] = useState(dKey);
   return (
     <ViewGroupFluid>
-      <Tabs accessKey={key} onSelect={(k) => setKey(k || "")}>
+      <Tabs activeKey={key} onSelect={(k) => setKey(k || "")}>
         {children}
       </Tabs>
     </ViewGroupFluid>

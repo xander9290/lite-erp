@@ -9,6 +9,7 @@ import {
   fetchImage,
   removeImage,
 } from "@/app/actions/image-source-actions";
+import { useModals } from "@/context/ModalContext";
 
 type TImageProps = {
   entityType: string;
@@ -35,6 +36,7 @@ function ImageSource({
   height,
   editable,
 }: TImageProps) {
+  const { modalError } = useModals();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [imageSource, setImageSource] = useState<TImageSource>({
@@ -52,7 +54,7 @@ function ImageSource({
 
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (imageSource.url !== null) {
-      toast.error("Elimina la imagen actual para editar");
+      modalError("Elimina la imagen actual para editar");
       return;
     }
     const file = e.target.files?.[0];
@@ -77,13 +79,14 @@ function ImageSource({
           getImageId(id ?? "");
         }
       } else {
-        toast.error(res.message, { id: toastId });
+        modalError(res.message);
       }
     }
   };
 
   const getImages = async () => {
     if (!sourceId) {
+      setImageSource({ url: null, publicId: null, id: null });
       return {
         success: false,
         message: "",

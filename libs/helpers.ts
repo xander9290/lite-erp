@@ -20,3 +20,7 @@ export const formatDate = (date: Date | string | number | null) => {
     hour12: true,
   });
 };
+
+export const parserDate = (date: Date) => {
+  return new Date(date).toISOString().slice(0, 16) || new Date();
+};

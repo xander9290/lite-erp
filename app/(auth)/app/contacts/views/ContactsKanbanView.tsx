@@ -39,9 +39,6 @@ function ContactsKanbanView({
                   {partner.phone && (
                     <p className="card-text my-1">{partner.phone}</p>
                   )}
-                  {partner.email && (
-                    <p className="card-text my-1">{partner.email}</p>
-                  )}
                 </div>
               </div>
             </div>

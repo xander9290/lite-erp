@@ -2,6 +2,9 @@
 
 import { ActionResponse, PartnerContacts } from "@/libs/definitions";
 import { prisma } from "@/libs/prisma";
+import { PartnernInputs } from "./views/ContactsFormView";
+import { auth } from "@/libs/auth";
+import { revalidatePath } from "next/cache";
 
 export async function fetchParterById({
   id,
@@ -37,6 +40,125 @@ export async function fetchParterById({
     return {
       success: false,
       message: "Error: " + error,
+    };
+  }
+}
+
+export async function createPartner({
+  data,
+}: {
+  data: PartnernInputs;
+}): Promise<ActionResponse<PartnerContacts>> {
+  try {
+    const session = await auth();
+    const sessionId = session?.user.id as unknown as string;
+
+    const newPartner = await prisma.partner.create({
+      data: {
+        name: data.name,
+        displayName: `[${data.phone}] ${data.name}`,
+        email: data.email || null,
+        phone: data.phone || null,
+        street: data.street || null,
+        secondStreet: data.secondStreet || null,
+        town: data.town || null,
+        city: data.city || null,
+        province: data.province || null,
+        country: data.country || null,
+        zip: data.zip ? parseInt(data.zip as unknown as string) : null,
+        vat: data.vat || null,
+        state: data.state || null,
+        displayType: data.displayType || "internal",
+        active: data.active ?? true,
+        userId: data.userId || null,
+        createUid: sessionId,
+      },
+      include: {
+        createBy: true,
+        userAgent: true,
+        Image: true,
+        relatedUser: true,
+      },
+    });
+
+    if (!newPartner) {
+      throw new Error("Error al crear contacto");
+    }
+
+    return {
+      success: true,
+      message: "CONTRACT CREATED SUCCESSFULLY",
+      data: newPartner,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+}
+
+export async function updatePartner({
+  id,
+  data,
+}: {
+  id: string | null;
+  data: PartnernInputs;
+}): Promise<ActionResponse<PartnerContacts>> {
+  try {
+    if (!id) {
+      throw new Error("MODEL ID NOT DEFINED");
+    }
+
+    const newPartner = await prisma.partner.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        displayName: `[${data.phone}] ${data.name}`,
+        email: data.email || null,
+        phone: data.phone || null,
+        street: data.street || null,
+        secondStreet: data.secondStreet || null,
+        town: data.town || null,
+        city: data.city || null,
+        province: data.province || null,
+        country: data.country || null,
+        zip: data.zip ? parseInt(data.zip as unknown as string) : null,
+        vat: data.vat || null,
+        state: data.state || null,
+        displayType: data.displayType || "internal",
+        active: data.active ?? true,
+        userId: data.userId || null,
+      },
+      include: {
+        createBy: true,
+        userAgent: true,
+        Image: true,
+        relatedUser: true,
+      },
+    });
+
+    if (!newPartner) {
+      throw new Error("Error al editar contacto");
+    }
+
+    revalidatePath("/app/contacts");
+
+    return {
+      success: true,
+      message: "CONTRACT CREATED SUCCESSFULLY",
+      data: newPartner,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
     };
   }
 }

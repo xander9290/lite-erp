@@ -4,6 +4,7 @@ import ContactsViewList, { DisplayTypes } from "./ContactsViewList";
 import ContactsFormView from "./ContactsFormView";
 import { fetchParterById } from "../actions";
 import { PartnerContacts } from "@/libs/definitions";
+import { User } from "@/generate/prisma";
 
 async function ContactsViewMain({
   viewMode,
@@ -23,6 +24,7 @@ async function ContactsViewMain({
   const skip: number = parseInt(page) || 1;
   const perPage = 50;
   let partner: PartnerContacts | null = null;
+  let users: User[] | null = null;
 
   const [contacts, total] = await Promise.all([
     await db.find(
@@ -31,6 +33,7 @@ async function ContactsViewMain({
       {
         include: {
           Image: true,
+          relatedUser: true,
         },
         skip: (skip - 1) * perPage,
         take: perPage,
@@ -47,7 +50,11 @@ async function ContactsViewMain({
   if (id && id !== "null") {
     const resParter = await fetchParterById({ id });
     partner = resParter.data || null;
+  } else {
+    partner = null;
   }
+
+  users = await db.find("user", ["and", ["active", "=", true]]);
 
   if (viewMode === "list") {
     return (
@@ -61,7 +68,14 @@ async function ContactsViewMain({
       />
     );
   } else if (viewMode === "form") {
-    return <ContactsFormView partner={partner} />;
+    return (
+      <ContactsFormView
+        partner={partner || null}
+        users={users}
+        displayType={displayType}
+        modelId={id}
+      />
+    );
   } else {
     return <NotFound />;
   }

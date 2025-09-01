@@ -39,8 +39,8 @@ model Partner {
     userId    String? @map("user_id")
     userAgent User?   @relation("UserAgent", fields: [userId], references: [id])
 
-    createUid String? @map("create_uid")
-    createBy  User?   @relation("CreateUidPartners", fields: [createUid], references: [id])
+    createUid String @map("create_uid")
+    createBy  User   @relation("CreateUidPartners", fields: [createUid], references: [id])
 
     imageId String? @unique @map("image_id")
     Image   Image?  @relation("EntityImage", fields: [imageId], references: [id])

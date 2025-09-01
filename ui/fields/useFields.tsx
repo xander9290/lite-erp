@@ -2,10 +2,10 @@
 
 import { useAccess } from "@/context/AccessContext";
 import { CSSProperties } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Row, Tab } from "react-bootstrap";
 import { Control, UseFormRegisterReturn } from "react-hook-form";
 import { Many2one, Many2OneOption } from "../Many2one";
-import { register } from "module";
+import { FormCheckType } from "react-bootstrap/esm/FormCheck";
 
 type FieldEntryProps = {
   label: string;
@@ -51,12 +51,79 @@ type AppButtonProps = {
   disabled?: boolean;
 };
 
+type BooleanProps = {
+  label: string;
+  type: FormCheckType;
+  register: UseFormRegisterReturn;
+  fieldName: string;
+};
+
+type PageContentProps = {
+  children: React.ReactNode;
+  disabled?: boolean;
+  invisible?: boolean;
+  fieldName: string;
+};
+
 function useFields({ accessModel }: { accessModel: string | null }) {
   let access = null;
 
   if (accessModel) {
     access = useAccess(accessModel);
   }
+
+  const PageContent = ({
+    children,
+    disabled,
+    invisible,
+    fieldName,
+  }: PageContentProps) => {
+    const fieldAccessAttrs = access?.find(
+      (field) => field.fieldName === fieldName
+    );
+
+    return (
+      <fieldset
+        disabled={disabled}
+        style={{ display: invisible ? "none" : "block" }}
+        className="container-fluid my-2 p-0"
+      >
+        <fieldset
+          style={{ display: fieldAccessAttrs?.invisible ? "none" : "flex" }}
+          disabled={fieldAccessAttrs?.readonly}
+          className="row g-2"
+        >
+          {children}
+        </fieldset>
+      </fieldset>
+    );
+  };
+
+  const Boolean = ({ label, register, fieldName, type }: BooleanProps) => {
+    const fieldAccessAttrs = access?.find(
+      (field) => field.fieldName === fieldName
+    );
+
+    const styleProps: CSSProperties = {
+      display: fieldAccessAttrs?.invisible ? "none" : "block",
+      pointerEvents: fieldAccessAttrs?.readonly ? "none" : "auto",
+    };
+    return (
+      <Form.Group
+        controlId={"Control" + fieldName.trim()}
+        style={styleProps}
+        className="mb-2"
+      >
+        <Form.Check
+          size={2}
+          {...register}
+          type={type}
+          label={label}
+          id={label}
+        />
+      </Form.Group>
+    );
+  };
 
   const Entry = ({
     label,
@@ -81,9 +148,9 @@ function useFields({ accessModel }: { accessModel: string | null }) {
       <Form.Group
         controlId={"Control" + fieldName.trim()}
         style={styleProps}
-        className="mb-2"
+        className="mb-3"
       >
-        <Form.Label>{label}</Form.Label>
+        <Form.Label className="fw-semibold">{label}</Form.Label>
         <Form.Control
           className={className}
           {...register}
@@ -94,7 +161,11 @@ function useFields({ accessModel }: { accessModel: string | null }) {
           isInvalid={invalid}
           size="sm"
         />
-        {feedBack && feedBack}
+        {feedBack && (
+          <Form.Control.Feedback type="invalid">
+            {feedBack}
+          </Form.Control.Feedback>
+        )}
       </Form.Group>
     );
   };
@@ -122,9 +193,9 @@ function useFields({ accessModel }: { accessModel: string | null }) {
       <Form.Group
         controlId={"Control" + label.trim()}
         style={styleProps}
-        className="mb-2"
+        className="mb-3"
       >
-        <Form.Label>{label}</Form.Label>
+        <Form.Label className="fw-semibold">{label}</Form.Label>
         <Form.Select
           className={className}
           {...register}
@@ -166,9 +237,9 @@ function useFields({ accessModel }: { accessModel: string | null }) {
       <Form.Group
         controlId={"Control" + label.trim()}
         style={styleProps}
-        className="mb-2"
+        className="mb-3"
       >
-        <Form.Label>{label}</Form.Label>
+        <Form.Label className="fw-semibold">{label}</Form.Label>
         <Many2one
           disabled={disabled}
           options={options}
@@ -200,18 +271,17 @@ function useFields({ accessModel }: { accessModel: string | null }) {
     return (
       <Button
         style={styleProps}
-        size="sm"
-        variant="dark"
         onClick={action}
         disabled={disabled}
         title={fieldName}
+        className="fw-bolder"
       >
         {label}
       </Button>
     );
   };
 
-  return { Entry, Selection, Relation, AppButton };
+  return { Entry, Selection, Relation, AppButton, Boolean, PageContent };
 }
 
 export default useFields;
