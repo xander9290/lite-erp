@@ -22,6 +22,7 @@ export interface PartnerWithAttrs extends Partner {
 
 export interface PartnerContacts extends PartnerWithAttrs {
   userAgent: User | null;
+  children: Partner[] | null;
 }
 
 export interface UserWithPartner extends User {

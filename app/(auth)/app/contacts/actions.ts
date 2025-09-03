@@ -28,6 +28,7 @@ export async function fetchParterById({
         relatedUser: true,
         Image: true,
         userAgent: true,
+        children: true,
       },
     });
 
@@ -71,6 +72,7 @@ export async function createPartner({
         displayType: data.displayType || "internal",
         active: data.active ?? true,
         userId: data.userId || null,
+        parentId: data.parentId || null,
         createUid: sessionId,
       },
       include: {
@@ -78,12 +80,15 @@ export async function createPartner({
         userAgent: true,
         Image: true,
         relatedUser: true,
+        children: true,
       },
     });
 
     if (!newPartner) {
       throw new Error("Error al crear contacto");
     }
+
+    revalidatePath("/app/contacts");
 
     return {
       success: true,
@@ -112,6 +117,12 @@ export async function updatePartner({
       throw new Error("MODEL ID NOT DEFINED");
     }
 
+    const record = await prisma.partner.findUnique({ where: { id } });
+
+    if (record?.displayType === "customer" && data.parentId !== null) {
+      throw new Error("El tipo cliente no puede ser asignado como contacto");
+    }
+
     const newPartner = await prisma.partner.update({
       where: {
         id,
@@ -133,20 +144,20 @@ export async function updatePartner({
         displayType: data.displayType || "internal",
         active: data.active ?? true,
         userId: data.userId || null,
+        parentId: data.parentId || null,
       },
       include: {
         createBy: true,
         userAgent: true,
         Image: true,
         relatedUser: true,
+        children: true,
       },
     });
 
     if (!newPartner) {
       throw new Error("Error al editar contacto");
     }
-
-    revalidatePath("/app/contacts");
 
     return {
       success: true,

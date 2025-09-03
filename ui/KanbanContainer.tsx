@@ -11,7 +11,7 @@ function KanbanContainer({
   formView: string;
 }) {
   return (
-    <Col xs="12" sm="6" md="6" lg="4" xl="3" xxl="3">
+    <Col xs="12" sm="6" md="6" lg="4" xl="4" xxl="3">
       <Link
         href={formView}
         className="card text-decoration-none btn btn-light btn-sm shadow-sm"

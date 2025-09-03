@@ -5,6 +5,7 @@ import ContactsFormView from "./ContactsFormView";
 import { fetchParterById } from "../actions";
 import { PartnerContacts } from "@/libs/definitions";
 import { User } from "@/generate/prisma";
+import { prisma } from "@/libs/prisma";
 
 async function ContactsViewMain({
   viewMode,
@@ -55,6 +56,13 @@ async function ContactsViewMain({
   }
 
   users = await db.find("user", ["and", ["active", "=", true]]);
+  const allcontacts = await prisma.partner.findMany({
+    where: {
+      NOT: {
+        id,
+      },
+    },
+  });
 
   if (viewMode === "list") {
     return (
@@ -74,6 +82,7 @@ async function ContactsViewMain({
         users={users}
         displayType={displayType}
         modelId={id}
+        partners={allcontacts}
       />
     );
   } else {
