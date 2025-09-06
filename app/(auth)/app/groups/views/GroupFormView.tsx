@@ -5,16 +5,15 @@ import FormTemplate, {
   FormPage,
   ViewGroup,
 } from "@/components/templates/FormTemplate";
-import { Button, Form } from "react-bootstrap";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Button, Form, Table } from "react-bootstrap";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import {
   createGroup,
   GroupWithAttrs,
   removeUser,
   updateGroup,
 } from "../actions";
-import { useCallback, useEffect, useRef, useState } from "react";
-import GroupListUsers from "./GroupListUsers";
+import { useEffect, useRef, useState } from "react";
 import { Many2one } from "@/ui/Many2one";
 import toast from "react-hot-toast";
 import { GroupLine, Model, User } from "@/generate/prisma";
@@ -25,11 +24,18 @@ import GroupAccesModelsForm from "./GroupAccesModelsForm";
 import { getModelsMany2one } from "../../models/actions";
 import GroupAccessList from "./GroupAccessList";
 import { useAccess } from "@/context/AccessContext";
+import { useModals } from "@/context/ModalContext";
+
+export type TUserInputs = {
+  idDb: string | null;
+  id: string;
+  name: string;
+};
 
 type TInputs = {
   name: string;
   userId: User | null;
-  userIds: User[];
+  users: TUserInputs[];
   active: boolean;
   groupLine: GroupLine[];
 };
@@ -43,6 +49,7 @@ function GroupFormView({
   modelId: string | null;
   usersMany2one: User[];
 }) {
+  const { modalError } = useModals();
   const { data: session } = useSession();
   const {
     register,
@@ -53,7 +60,12 @@ function GroupFormView({
     watch,
   } = useForm<TInputs>();
 
-  const [userId, userIds, lines] = watch(["userId", "userIds", "groupLine"]);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "users",
+  });
+
+  const [userId, users, lines] = watch(["userId", "users", "groupLine"]);
 
   const originalValuesRef = useRef<TInputs | null>(null);
   const router = useRouter();
@@ -64,7 +76,7 @@ function GroupFormView({
     if (modelId && modelId === "null") {
       const newData = {
         name: data.name,
-        userIds: data.userIds as [],
+        users: data.users,
       };
 
       const res = await createGroup(newData);
@@ -84,7 +96,7 @@ function GroupFormView({
     } else {
       const newData = {
         name: data.name,
-        userIds: data.userIds,
+        users: data.users,
         modelId: modelId || "",
         active: data.active,
       };
@@ -112,38 +124,6 @@ function GroupFormView({
     }
   };
 
-  const handleAddUser = async () => {
-    const checkUser = userIds.find((user) => user.id === userId?.id);
-
-    if (checkUser) {
-      toast.error("El usuario ya está en la lista", {
-        position: "top-center",
-      });
-      return;
-    }
-
-    const newUsers = [...userIds, userId || {}];
-    reset({ userIds: newUsers });
-  };
-
-  const handleRemoveUser = useCallback(async (userTargetId: string | null) => {
-    if (userTargetId && modelId) {
-      const res = await removeUser({ groupId: modelId, userId: userTargetId });
-      if (res.success) {
-        toast.success("Usuario eliminado del grupo", {
-          position: "top-right",
-        });
-        await createActivity({
-          entityId: modelId,
-          entityName: "groups",
-          string: `Ha removido un usuario`,
-        });
-      } else {
-        toast.error(res.message, { position: "top-right" });
-      }
-    }
-  }, []);
-
   const handleAddAccess = (data: GroupLine | undefined | null) => {
     if (!data) return;
     const newAccess = [...lines, data];
@@ -156,9 +136,13 @@ function GroupFormView({
       const initialValues: TInputs = {
         name: group.name || "",
         userId: null,
-        userIds: group.users,
         active: group.active,
         groupLine: group.groupLines,
+        users: group.users.map((u) => ({
+          id: u.id,
+          idDb: u.id || "",
+          name: u.name || "",
+        })),
       };
       originalValuesRef.current = initialValues;
       reset(initialValues);
@@ -167,7 +151,7 @@ function GroupFormView({
       reset({
         name: "",
         userId: null,
-        userIds: [],
+        users: [],
         active: true,
         groupLine: [],
       });
@@ -231,39 +215,71 @@ function GroupFormView({
       <FormBook dKey="accessPage">
         <FormPage title="Accesos" eventKey="accessPage">
           <GroupAccessList groupLines={lines} />
-          <GroupAccesModelsForm
-            getNewValue={handleAddAccess}
-            modelList={modelsMany2one}
-            modelId={modelId}
-          />
+          <Table striped bordered>
+            
+          </Table>
         </FormPage>
         <FormPage
           title={`Usuarios (${group?.users.length ?? 0})`}
           eventKey="usersPage"
         >
-          <div className="d-flex py-2">
-            <Many2one<User>
-              {...register("userId")}
-              control={control}
-              options={usersMany2one}
-              label="Añadir usuario"
-              size="sm"
-              callBackMode="object"
-              disabled={group?.active === false}
-            />
-            <Button
-              size="sm"
-              type="button"
-              onClick={handleAddUser}
-              className="ms-1"
-            >
-              <i className="bi bi-plus-circle"></i>
-            </Button>
-          </div>
-          <GroupListUsers
-            handelRemoveUser={handleRemoveUser}
-            users={userIds || []}
-          />
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th className="text-center">
+                  <i className="bi bi-trash3"></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field, i) => (
+                <tr key={field.id}>
+                  <th className="px-0">
+                    <Many2one
+                      {...register(`users.${i}.id` as const)} // 👉 path correcto en el array
+                      options={usersMany2one}
+                      control={control}
+                      callBackMode="id"
+                      size="sm"
+                    />
+                  </th>
+                  <th className="text-center">
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        if (field.idDb) {
+                          const res = await removeUser({
+                            modelId,
+                            userId: field.idDb,
+                          });
+                          if (!res.success) {
+                            modalError(res.message);
+                          } else {
+                            remove(i);
+                          }
+                        }
+                      }}
+                    >
+                      <i className="bi bi-trash3"></i>
+                    </Button>
+                  </th>
+                </tr>
+              ))}
+              <tr>
+                <td className="p-0">
+                  <Button
+                    onClick={() => append({ id: "", name: "", idDb: "" })}
+                    size="sm"
+                    type="button"
+                    variant="link"
+                  >
+                    Agregar usuario
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </FormPage>
       </FormBook>
     </FormTemplate>

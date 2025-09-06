@@ -4,6 +4,7 @@ import GroupFormView from "./GroupFormView";
 import GroupListView from "./GroupListView";
 import { userMany2one } from "../../users/actions";
 import { db } from "@/libs/core/db/ExtendedPrisma";
+import { prisma } from "@/libs/prisma";
 
 async function MainGroupView({
   viewMode,
@@ -42,9 +43,7 @@ async function MainGroupView({
     group = groupRes.data;
   }
 
-  const usersMany2one = await userMany2one({
-    domain: ["and", ["groupId", "=", null], ["active", "=", true]],
-  });
+  const usersMany2one = await prisma.user.findMany();
 
   if (viewMode === "list") {
     return (
@@ -61,7 +60,7 @@ async function MainGroupView({
       <GroupFormView
         modelId={id}
         group={group || null}
-        usersMany2one={usersMany2one.data || []}
+        usersMany2one={usersMany2one || []}
       />
     );
   } else {

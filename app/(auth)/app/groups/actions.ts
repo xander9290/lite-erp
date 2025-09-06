@@ -6,6 +6,7 @@ import { db } from "@/libs/core/db/ExtendedPrisma";
 import { ActionResponse } from "@/libs/definitions";
 import { prisma } from "@/libs/prisma";
 import { revalidatePath } from "next/cache";
+import { TUserInputs } from "./views/GroupFormView";
 
 export interface GroupWithAttrs extends Group {
   users: User[];
@@ -96,10 +97,10 @@ export async function fetchGroup(
 
 export async function createGroup({
   name,
-  userIds,
+  users,
 }: {
   name: string;
-  userIds: User[];
+  users: TUserInputs[];
 }): Promise<ActionResponse<GroupWithAttrs>> {
   try {
     const session = await auth();
@@ -111,7 +112,7 @@ export async function createGroup({
           connect: { id: session?.user.id },
         },
         users: {
-          connect: userIds.map((user) => ({ id: user.id })),
+          connect: users.map((user) => ({ id: user.id })),
         },
       },
       include: {
@@ -136,12 +137,12 @@ export async function createGroup({
 
 export async function updateGroup({
   modelId,
-  userIds,
+  users,
   name,
   active,
 }: {
   modelId: string;
-  userIds: User[];
+  users: TUserInputs[];
   name: string;
   active: boolean;
 }): Promise<ActionResponse<string>> {
@@ -155,10 +156,12 @@ export async function updateGroup({
         displayName: name,
         active,
         users: {
-          connect: userIds.map((user) => ({ id: user.id })),
+          connect: users.map((user) => ({ id: user.id })),
         },
       },
     });
+
+    revalidatePath("/app/groups");
 
     return {
       success: true,
@@ -211,43 +214,43 @@ export async function updateGroup({
 //   }
 // }
 
-export async function removeUser({
-  groupId,
-  userId,
-}: {
-  groupId: string | null;
-  userId: string | null;
-}): Promise<ActionResponse<unknown>> {
-  try {
-    const group = await prisma.group.update({
-      where: { id: groupId || "" },
-      data: {
-        users: {
-          disconnect: { id: userId || "" },
-        },
-      },
-    });
+// export async function removeUser({
+//   groupId,
+//   userId,
+// }: {
+//   groupId: string | null;
+//   userId: string | null;
+// }): Promise<ActionResponse<unknown>> {
+//   try {
+//     const group = await prisma.group.update({
+//       where: { id: groupId || "" },
+//       data: {
+//         users: {
+//           disconnect: { id: userId || "" },
+//         },
+//       },
+//     });
 
-    if (!group) {
-      return {
-        success: false,
-        message: "Grupo no encontrado",
-      };
-    }
+//     if (!group) {
+//       return {
+//         success: false,
+//         message: "Grupo no encontrado",
+//       };
+//     }
 
-    revalidatePath("/app/groups");
+//     revalidatePath("/app/groups");
 
-    return {
-      success: true,
-      message: "Usuario eliminado del grupo correctamente",
-    };
-  } catch (error: unknown) {
-    return {
-      success: false,
-      message: "Error al eliminar usuario del grupo: " + error,
-    };
-  }
-}
+//     return {
+//       success: true,
+//       message: "Usuario eliminado del grupo correctamente",
+//     };
+//   } catch (error: unknown) {
+//     return {
+//       success: false,
+//       message: "Error al eliminar usuario del grupo: " + error,
+//     };
+//   }
+// }
 
 export async function createGroupLine({
   modelId,
@@ -394,6 +397,46 @@ export async function fetchAccess({
     return {
       success: false,
       message: "Error: " + error,
+    };
+  }
+}
+
+export async function removeUser({
+  userId,
+  modelId,
+}: {
+  userId: string | null;
+  modelId: string | null;
+}): Promise<ActionResponse<Boolean>> {
+  try {
+    if (!userId || !modelId) {
+      throw new Error("ID NO DEFINIDA");
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error("El usuario no existe" + userId);
+
+    await prisma.group.update({
+      where: {
+        id: modelId,
+      },
+      data: {
+        users: {
+          disconnect: { id: userId },
+        },
+      },
+    });
+
+    return {
+      success: true,
+      message: "",
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
     };
   }
 }

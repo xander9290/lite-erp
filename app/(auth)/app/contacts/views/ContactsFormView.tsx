@@ -12,9 +12,9 @@ import { PartnerContacts } from "@/libs/definitions";
 import { formatDate } from "@/libs/helpers";
 import useFields from "@/ui/fields/useFields";
 import ImageSource from "@/ui/ImageSource";
-import { useEffect, useRef } from "react";
-import { Container, Form, Row } from "react-bootstrap";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Children, useEffect, useRef } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { createPartner, updatePartner } from "../actions";
 import { useModals } from "@/context/ModalContext";
 import { useRouter } from "next/navigation";
@@ -24,8 +24,14 @@ export type PartnernInputs = Omit<
   PartnerContacts,
   "displayName" | "id" | "Image" | "userAgent"
 >;
-{
-}
+
+type LineInputs = {
+  name: string;
+  phone: string | null;
+  email: string | null;
+  street: string;
+};
+
 function ContactsFormView({
   partner,
   users,
@@ -54,6 +60,15 @@ function ContactsFormView({
     formState: { isDirty, isSubmitting },
     control,
   } = useForm<PartnernInputs>();
+
+  const {
+    fields: fl,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "children",
+  });
 
   const onSubmit: SubmitHandler<PartnernInputs> = async (data) => {
     if (modelId && modelId === "null") {
@@ -112,30 +127,8 @@ function ContactsFormView({
       };
       reset(values);
       originalValuesRef.current = values;
-      console.log(partners);
     } else {
-      reset({
-        name: "",
-        email: null,
-        phone: null,
-        street: null,
-        secondStreet: null,
-        town: null,
-        city: null,
-        province: null,
-        country: null,
-        zip: null,
-        vat: null,
-        state: null,
-        active: false,
-        userId: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageId: null,
-        createBy: null,
-        displayType: displayType,
-        parentId: null,
-      });
+      reset({});
       originalValuesRef.current = null;
     }
   }, [partner]);

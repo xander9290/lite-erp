@@ -2,7 +2,7 @@
 
 import { useAccess } from "@/context/AccessContext";
 import { CSSProperties } from "react";
-import { Button, Form, Row, Tab } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Control, UseFormRegisterReturn } from "react-hook-form";
 import { Many2one, Many2OneOption } from "../Many2one";
 import { FormCheckType } from "react-bootstrap/esm/FormCheck";
@@ -109,11 +109,7 @@ function useFields({ accessModel }: { accessModel: string | null }) {
       pointerEvents: fieldAccessAttrs?.readonly ? "none" : "auto",
     };
     return (
-      <Form.Group
-        controlId={"Control" + fieldName.trim()}
-        style={styleProps}
-        className="mb-2"
-      >
+      <Form.Group style={styleProps} className="mb-2">
         <Form.Check
           size={2}
           {...register}
@@ -145,11 +141,7 @@ function useFields({ accessModel }: { accessModel: string | null }) {
     };
 
     return (
-      <Form.Group
-        controlId={"Control" + fieldName.trim()}
-        style={styleProps}
-        className="mb-3"
-      >
+      <Form.Group style={styleProps} className="mb-3">
         <Form.Label className="fw-semibold">{label}</Form.Label>
         <Form.Control
           className={className}
@@ -190,11 +182,7 @@ function useFields({ accessModel }: { accessModel: string | null }) {
     };
 
     return (
-      <Form.Group
-        controlId={"Control" + label.trim()}
-        style={styleProps}
-        className="mb-3"
-      >
+      <Form.Group style={styleProps} className="mb-3">
         <Form.Label className="fw-semibold">{label}</Form.Label>
         <Form.Select
           className={className}
@@ -234,11 +222,7 @@ function useFields({ accessModel }: { accessModel: string | null }) {
     };
 
     return (
-      <Form.Group
-        controlId={"Control" + label.trim()}
-        style={styleProps}
-        className="mb-3"
-      >
+      <Form.Group style={styleProps} className="mb-3">
         <Form.Label className="fw-semibold">{label}</Form.Label>
         <Many2one
           disabled={disabled}
